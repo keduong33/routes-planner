@@ -4,6 +4,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
+import { Theme, ThemePanel } from '@radix-ui/themes'
 import type { QueryClient } from '@tanstack/react-query'
 
 interface MyRouterContext {
@@ -12,7 +13,7 @@ interface MyRouterContext {
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
-    <>
+    <Theme className="">
       {/* <Header /> */}
       <Outlet />
       <TanStackDevtools
@@ -27,6 +28,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
           TanStackQueryDevtools,
         ]}
       />
-    </>
+      <ThemePanel defaultOpen={false} />
+    </Theme>
   ),
 })
