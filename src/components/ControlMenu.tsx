@@ -2,7 +2,7 @@ import { Button } from '@radix-ui/themes'
 import type { LatLng } from 'leaflet'
 import { useState } from 'react'
 import { Marker, Popup, Tooltip, useMapEvents } from 'react-leaflet'
-import { CONTROL_CLASSES, POSITION_CLASSES } from '../consts'
+import { CONTROL_CLASSES } from '../consts'
 import { ContextMenu } from './ContextMenu'
 
 export function ControlMenu() {
@@ -25,7 +25,7 @@ export function ControlMenu() {
   })
   return (
     <>
-      <div className={POSITION_CLASSES.topright}>
+      <div style={{ bottom: '20px', position: 'absolute', right: '5px' }}>
         <div
           className={CONTROL_CLASSES.control}
           style={{

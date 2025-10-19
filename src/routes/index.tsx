@@ -4,7 +4,6 @@ import type { MarkerProps } from 'react-leaflet'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 import { ControlMenu } from '../components/ControlMenu'
 import { MapDrawer } from '../components/MapDrawer/MapDrawer'
-import { SearchBar } from '../components/SearchBar/SearchBar'
 
 const tiles: Array<{ attribution: string; url: string }> = [
   {
@@ -27,10 +26,11 @@ export const Route = createFileRoute('/')({
 
 function App() {
   const [markers, setMarkers] = useState<Array<MarkerProps>>([])
-  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(true)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
+      {/* {!drawerOpen && <SearchBar setDrawerOpen={setDrawerOpen} mode="map" />} */}
       <MapDrawer open={drawerOpen} setOpen={setDrawerOpen} />
       <MapContainer
         center={[0, 0]}
@@ -41,6 +41,7 @@ function App() {
           width: '100%',
         }}
         zoomControl={false}
+        doubleClickZoom={false}
       >
         <TileLayer
           attribution={`&copy; ${chosenTile.attribution}`}
@@ -49,7 +50,7 @@ function App() {
         {markers.map((marker) => (
           <Marker {...marker} />
         ))}
-        <SearchBar setDrawerOpen={setDrawerOpen} />
+
         <ControlMenu />
       </MapContainer>
     </div>

@@ -1,0 +1,10 @@
+# Must have
+[] Forward geocoding - search address
+[] Direction
+
+# Should have
+[] Autocomplete
+[] Reverse geocoding - search from a location on the map
+
+# Someday
+[] Account

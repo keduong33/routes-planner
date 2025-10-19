@@ -13,7 +13,7 @@ interface MyRouterContext {
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
-    <Theme className="">
+    <Theme>
       {/* <Header /> */}
       <Outlet />
       <TanStackDevtools
