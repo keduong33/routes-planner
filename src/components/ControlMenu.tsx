@@ -1,9 +1,9 @@
-import { Button } from '@radix-ui/themes'
 import type { LatLng } from 'leaflet'
 import { useState } from 'react'
 import { Marker, Popup, Tooltip, useMapEvents } from 'react-leaflet'
 import { CONTROL_CLASSES } from '../consts'
 import { ContextMenu } from './ContextMenu'
+import { Button } from './ui/button'
 
 export function ControlMenu() {
   const [isLoading, setIsLoading] = useState(false)
@@ -39,7 +39,6 @@ export function ControlMenu() {
               setPosition(null)
               map.locate()
             }}
-            loading={isLoading}
           >
             Locate
           </Button>

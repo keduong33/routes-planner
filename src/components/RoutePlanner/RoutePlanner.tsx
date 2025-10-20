@@ -1,5 +1,4 @@
 import { MapPinPlusIcon, TrashIcon } from '@phosphor-icons/react'
-import { Flex, IconButton, Text, Tooltip } from '@radix-ui/themes'
 import { useCallback, useState } from 'react'
 import type { UUIDTypes } from 'uuid'
 import type { NormalizedLocation } from '../../api/geo/types'
@@ -7,6 +6,8 @@ import type { RouteOption } from '../../types'
 import { newRoute } from '../../types'
 import type { FieldType } from '../MapDrawer/SearchBar/SearchBar'
 import { SearchBar } from '../MapDrawer/SearchBar/SearchBar'
+import { Button } from '../ui/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 
 type RouteProps = {}
 
@@ -82,7 +83,7 @@ export function RoutePlanner() {
   }
 
   return (
-    <Flex direction="column" gapY="2" p="1">
+    <div className="flex flex-col gap-y-2 p-1 h-full">
       <SearchBar
         initialLocation={activeRoute.startingLocation}
         activeRouteId={activeRouteId}
@@ -90,7 +91,7 @@ export function RoutePlanner() {
         fieldType="starting"
       />
       {activeRoute.stops.map((stop, i) => (
-        <Flex direction="row" gapX="2" align="center">
+        <div className="flex-row gap-x-2 items-center">
           <SearchBar
             key={`stop-${i}`}
             initialLocation={stop}
@@ -99,12 +100,15 @@ export function RoutePlanner() {
             fieldType="stop"
           />
 
-          <Tooltip content="Remove stop">
-            <IconButton onClick={() => removeStop(i)} variant="ghost">
-              <TrashIcon size={20} />
-            </IconButton>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button size="icon" onClick={() => removeStop(i)} variant="ghost">
+                <TrashIcon size={20} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Remove stop</TooltipContent>
           </Tooltip>
-        </Flex>
+        </div>
       ))}
       <SearchBar
         initialLocation={activeRoute.destination}
@@ -112,18 +116,19 @@ export function RoutePlanner() {
         handleLocationSelect={handleLocationSelect}
         fieldType="destination"
       />
-      <Flex direction="row">
-        <Flex direction="column" width={{ initial: '50px' }} align="center">
-          <Tooltip content="Add new stop">
-            <IconButton radius="full" onClick={addStop}>
-              <MapPinPlusIcon size={20} />
-            </IconButton>
+      <div className="flex-row">
+        <div className="flex-col w-[50px] items-center">
+          <Tooltip>
+            <TooltipContent>Add new stop</TooltipContent>
+            <TooltipTrigger asChild>
+              <Button variant="default" size="icon" onClick={addStop}>
+                <MapPinPlusIcon size={20} />
+              </Button>
+            </TooltipTrigger>
           </Tooltip>
-          <Text as="label" size="1" align="center">
-            Add new stop
-          </Text>
-        </Flex>
-      </Flex>
-    </Flex>
+          <p>Add new stop</p>
+        </div>
+      </div>
+    </div>
   )
 }

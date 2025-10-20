@@ -1,4 +1,9 @@
-import { Box, Text, TextField, Tooltip } from '@radix-ui/themes'
+import {
+  Command,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { UUIDTypes } from 'uuid'
 import { useSearchAddress } from '../../../api/geo/hooks'
@@ -83,80 +88,42 @@ export function SearchBar({
   }
 
   return (
-    <Box
-      width={{ initial: '200px', md: '300px' }}
-      position="relative"
-      ref={dropdownRef}
+    <Command
+      shouldFilter={false}
+      className="rounded-lg border shadow-md w-[200px] md:w-[300px] relative"
     >
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          if (canSubmit) refetch()
+      <CommandInput
+        placeholder={fieldTypeToPlaceholderText.get(fieldType)}
+        value={searchedAddress}
+        onValueChange={handleInputChange}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            if (canSubmit) refetch()
+          }
         }}
-        style={{ width: '100%' }}
-      >
-        <TextField.Root
-          ref={inputRef}
-          placeholder={fieldTypeToPlaceholderText.get(fieldType)}
-          size="3"
-          value={searchedAddress}
-          onChange={(e) => handleInputChange(e.currentTarget.value)}
-          onFocus={() => {
-            if (
-              searchedAddress.length > 0 &&
-              locations &&
-              locations.length > 0
-            ) {
-              setShowDropdown(true)
-            }
-          }}
-          disabled={isLoading}
-        />
+      />
 
-        {/* Dropdown suggestion list */}
-        {showDropdown &&
-          locations &&
-          locations.length > 0 &&
-          !selectedLocation && (
-            <Box
-              position="absolute"
-              style={{
-                top: 'calc(100% + 4px)',
-                left: 0,
-                right: 0,
-                backgroundColor: 'var(--color-panel-solid)',
-                border: '1px solid var(--gray-a6)',
-                borderRadius: 'var(--radius-3)',
-                boxShadow: 'var(--shadow-5)',
-                maxHeight: '300px',
-                overflowY: 'auto',
-                zIndex: 1000,
+      {/* Only render suggestions if locations exist */}
+      {locations && locations.length > 0 && (
+        <CommandList className="z-[900]">
+          {/* <CommandEmpty>
+                {isLoading ? 'Loading...' : 'No results found.'}
+              </CommandEmpty> */}
+          {locations.slice(0, 5).map((location, i) => (
+            <CommandItem
+              key={`${location.name}-${i}`}
+              onSelect={() => {
+                onLocationClick(location)
+                setSelectedLocation(location)
+                setShowDropdown(false)
               }}
+              value={location.displayName}
             >
-              {locations.slice(0, 5).map((location, index) => (
-                <Tooltip content={location.displayName}>
-                  <Box
-                    key={`${location.name}-${index}`}
-                    p="3"
-                    className="location"
-                    onClick={() => onLocationClick(location)}
-                    style={{
-                      cursor: 'pointer',
-                      borderBottom:
-                        index < Math.min(locations.length, 5) - 1
-                          ? '1px solid var(--gray-a3)'
-                          : 'none',
-                    }}
-                  >
-                    <Text as="p" size="2" truncate>
-                      {location.displayName}
-                    </Text>
-                  </Box>
-                </Tooltip>
-              ))}
-            </Box>
-          )}
-      </form>
-    </Box>
+              {location.displayName}
+            </CommandItem>
+          ))}
+        </CommandList>
+      )}
+    </Command>
   )
 }

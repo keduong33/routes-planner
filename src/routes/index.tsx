@@ -4,6 +4,7 @@ import type { MarkerProps } from 'react-leaflet'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 import { ControlMenu } from '../components/ControlMenu'
 import { MapDrawer } from '../components/MapDrawer/MapDrawer'
+import { TooltipProvider } from '../components/ui/tooltip'
 
 const tiles: Array<{ attribution: string; url: string }> = [
   {
@@ -29,30 +30,29 @@ function App() {
   const [drawerOpen, setDrawerOpen] = useState(true)
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row' }}>
-      {/* {!drawerOpen && <SearchBar setDrawerOpen={setDrawerOpen} mode="map" />} */}
-      <MapDrawer open={drawerOpen} setOpen={setDrawerOpen} />
-      <MapContainer
-        center={[0, 0]}
-        zoom={0}
-        scrollWheelZoom={true}
-        style={{
-          height: window.innerHeight,
-          width: '100%',
-        }}
-        zoomControl={false}
-        doubleClickZoom={false}
-      >
-        <TileLayer
-          attribution={`&copy; ${chosenTile.attribution}`}
-          url={chosenTile.url}
-        />
-        {markers.map((marker) => (
-          <Marker {...marker} />
-        ))}
+    <TooltipProvider>
+      <div className="w-full">
+        {/* {!drawerOpen && <SearchBar setDrawerOpen={setDrawerOpen} mode="map" />} */}
+        <MapDrawer open={drawerOpen} setOpen={setDrawerOpen} />
+        <MapContainer
+          center={[0, 0]}
+          zoom={0}
+          scrollWheelZoom={true}
+          className="h-screen w-full"
+          zoomControl={false}
+          doubleClickZoom={false}
+        >
+          <TileLayer
+            attribution={`&copy; ${chosenTile.attribution}`}
+            url={chosenTile.url}
+          />
+          {markers.map((marker) => (
+            <Marker {...marker} />
+          ))}
 
-        <ControlMenu />
-      </MapContainer>
-    </div>
+          <ControlMenu />
+        </MapContainer>
+      </div>
+    </TooltipProvider>
   )
 }
