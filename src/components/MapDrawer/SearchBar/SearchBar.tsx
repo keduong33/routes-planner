@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { UUIDTypes } from 'uuid'
 import { useSearchAddress } from '../../../api/geo/hooks'
 import type { NormalizedLocation } from '../../../api/geo/types'
-import './SearchBar.css'
 
 export type FieldType = 'starting' | 'stop' | 'destination'
 
