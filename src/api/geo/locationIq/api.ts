@@ -17,6 +17,7 @@ export const locationIqApi = {
     const data = locationIqFakeData.search
 
     return data.map((item) => ({
+      id: item.place_id,
       name: item.display_name,
       lat: parseFloat(item.lat),
       lon: parseFloat(item.lon),

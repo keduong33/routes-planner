@@ -5,6 +5,7 @@ export type NormalizedRoute = {
 }
 
 export type NormalizedLocation = {
+  id: string
   name: string
   lat: number
   lon: number

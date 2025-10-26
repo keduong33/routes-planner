@@ -152,7 +152,7 @@ export function SearchBar({
       {locations && locations.length > 0 && (
         <div className="z-[900] absolute left-0 top-full w-full flex flex-col mt-1 bg-background border border-border shadow-lg rounded-lg overflow-hidden">
           {locations.slice(0, 5).map((location, i) => (
-            <Tooltip>
+            <Tooltip key={location.id}>
               <TooltipTrigger asChild>
                 <div
                   key={`${location.name}-${i}`}
