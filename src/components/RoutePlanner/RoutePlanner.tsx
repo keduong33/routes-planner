@@ -83,7 +83,7 @@ export function RoutePlanner() {
   }
 
   return (
-    <div className="flex flex-col gap-y-2 p-1 h-full">
+    <div className="flex flex-col gap-y-3 h-full">
       <SearchBar
         initialLocation={activeRoute.startingLocation}
         activeRouteId={activeRouteId}
@@ -91,9 +91,8 @@ export function RoutePlanner() {
         fieldType="starting"
       />
       {activeRoute.stops.map((stop, i) => (
-        <div className="flex-row gap-x-2 items-center">
+        <div key={`stop-${i}`} className="flex flex-row gap-x-2 items-center">
           <SearchBar
-            key={`stop-${i}`}
             initialLocation={stop}
             activeRouteId={activeRouteId}
             handleLocationSelect={handleLocationSelect}
@@ -116,16 +115,11 @@ export function RoutePlanner() {
         handleLocationSelect={handleLocationSelect}
         fieldType="destination"
       />
-      <div className="flex-row">
-        <div className="flex-col w-[50px] items-center">
-          <Tooltip>
-            <TooltipContent>Add new stop</TooltipContent>
-            <TooltipTrigger asChild>
-              <Button variant="default" size="icon" onClick={addStop}>
-                <MapPinPlusIcon size={20} />
-              </Button>
-            </TooltipTrigger>
-          </Tooltip>
+      <div className="grid grid-cols-3">
+        <div className="flex flex-col items-center">
+          <Button variant="default" size="icon" onClick={addStop}>
+            <MapPinPlusIcon size={20} />
+          </Button>
           <p>Add new stop</p>
         </div>
       </div>
