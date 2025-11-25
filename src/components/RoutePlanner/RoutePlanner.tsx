@@ -1,6 +1,11 @@
-import { MapPinPlusIcon, TrashIcon } from '@phosphor-icons/react'
+import {
+  CalculatorIcon,
+  MapPinPlusIcon,
+  TrashIcon,
+} from '@phosphor-icons/react'
 import { useCallback, useState } from 'react'
 import type { UUIDTypes } from 'uuid'
+import { useDirection } from '../../api/geo/hooks'
 import type { NormalizedLocation } from '../../api/geo/types'
 import type { RouteOption } from '../../types'
 import { newRoute } from '../../types'
@@ -21,6 +26,8 @@ export function RoutePlanner() {
   const activeRoute = activeRouteId
     ? routeOptions.find((route) => route.id === activeRouteId)
     : undefined
+
+  const { refetch } = useDirection(activeRoute)
 
   const handleLocationSelect = useCallback(
     (
@@ -77,6 +84,15 @@ export function RoutePlanner() {
     [activeRouteId],
   )
 
+  const calculateRoute = useCallback(() => {
+    if (!activeRoute) {
+      console.error('No active route')
+      return
+    }
+    console.log(activeRoute)
+    refetch()
+  }, [activeRoute])
+
   if (!activeRouteId || !activeRoute) {
     console.log('no active route id')
     return null
@@ -96,6 +112,7 @@ export function RoutePlanner() {
             initialLocation={stop}
             activeRouteId={activeRouteId}
             handleLocationSelect={handleLocationSelect}
+            stopIndex={i}
             fieldType="stop"
           />
 
@@ -121,6 +138,12 @@ export function RoutePlanner() {
             <MapPinPlusIcon size={20} />
           </Button>
           <p>Add new stop</p>
+        </div>
+        <div className="flex flex-col items-center">
+          <Button variant="default" size="icon" onClick={calculateRoute}>
+            <CalculatorIcon size={20} />
+          </Button>
+          <p>Calculate route</p>
         </div>
       </div>
     </div>

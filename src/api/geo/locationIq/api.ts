@@ -1,20 +1,21 @@
+import type { RouteOption } from '../../../types'
 import type { NormalizedLocation } from '../types'
+import type { Location } from './types'
 
 const locationIqUrl = 'https://us1.locationiq.com/v1/'
 const options = { method: 'GET', headers: { accept: 'application/json' } }
+const key = import.meta.env.VITE_LOCATION_IQ
 
 export const locationIqApi = {
   /**
    * https://docs.locationiq.com/reference/search
    */
   async search(query: string): Promise<Array<NormalizedLocation>> {
-    // const key = import.meta.env.VITE_LOCATION_IQ
-    // const res = await fetch(
-    //   `${locationIqUrl}?key=${key}&q=${encodeURIComponent(query)}`,
-    //   options,
-    // )
-    // const data = (await res.json()) as Array<Location>
-    const data = locationIqFakeData.search
+    const res = await fetch(
+      `${locationIqUrl}search?key=${key}&q=${encodeURIComponent(query)}&format=json`,
+      options,
+    )
+    const data = (await res.json()) as Array<Location>
 
     return data.map((item) => ({
       id: item.place_id,
@@ -24,6 +25,35 @@ export const locationIqApi = {
       displayName: item.display_name,
     }))
   },
+
+  async getDirections(route: RouteOption) {
+    if (route.stops.length + 2 > 25) {
+      throw new Error('Exceed maximum of 25 locations')
+    }
+
+    if (!route.startingLocation || !route.destination) {
+      throw new Error('No starting location/destination')
+    }
+
+    let coordinates = convertToCoordinates(route.startingLocation)
+
+    route.stops.forEach((stop) => {
+      if (stop) coordinates += `;${convertToCoordinates(stop)}`
+    })
+
+    coordinates += `;${convertToCoordinates(route.destination)}`
+
+    const res = await fetch(
+      `${locationIqUrl}directions/driving/${coordinates}?key=${key}&steps=false&geometries=geojson`,
+      options,
+    )
+
+    return res
+  },
+}
+
+function convertToCoordinates(location: NormalizedLocation) {
+  return `${location.lon},${location.lat}`
 }
 
 const locationIqFakeData = {

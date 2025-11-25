@@ -1,3 +1,6 @@
+/**
+ * Search API types
+ */
 export interface Location {
   place_id: string
   licence: string
@@ -25,4 +28,34 @@ export interface Address {
   postcode: string
   country: string
   country_code: string
+}
+
+/**
+ * Direction API Types
+ */
+
+export interface Direction {
+  code: string
+  waypoints: Waypoints
+  routes: Routes
+}
+export interface Waypoints {
+  distance: number
+  location?: Array<number> | null
+  name: string
+}
+export interface Routes {
+  legs: Legs
+  weight_name: string
+  geometry: string
+  weight: number
+  distance: number
+  duration: number
+}
+export interface Legs {
+  steps?: Array<null> | null
+  weight: number
+  distance: number
+  summary: string
+  duration: number
 }

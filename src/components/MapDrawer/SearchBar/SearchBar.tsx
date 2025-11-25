@@ -86,8 +86,6 @@ export function SearchBar({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      console.log(e.key, selectedIndex)
-
       // Handle Enter when no location is selected
       if (selectedIndex === -1 && canSubmit && e.key === 'Enter') {
         refetch()
