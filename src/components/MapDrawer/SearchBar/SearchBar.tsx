@@ -47,6 +47,7 @@ export function SearchBar({
     data: locations,
     refetch,
     isLoading,
+    error,
   } = useSearchAddress(searchedAddress)
 
   const canSubmit = searchedAddress.length > 0
@@ -137,13 +138,20 @@ export function SearchBar({
     setSelectedIndex(-1)
   }, [searchedAddress])
 
+  useEffect(() => {
+    if (error) {
+      alert(`Failed to search`)
+    }
+  }, [error])
+
   return (
-    <div className="w-[200px] md:w-[300px] relative">
+    <div className="w-full relative">
       <Input
         placeholder={fieldTypeToPlaceholderText.get(fieldType)}
         value={searchedAddress}
         onChange={(e) => handleInputChange(e.currentTarget.value)}
         onKeyDown={handleKeyDown}
+        type="search"
       />
 
       {/* Only render suggestions if locations exist */}

@@ -100,12 +100,22 @@ export function RoutePlanner() {
 
   return (
     <div className="flex flex-col gap-y-3 h-full">
-      <SearchBar
-        initialLocation={activeRoute.startingLocation}
-        activeRouteId={activeRouteId}
-        handleLocationSelect={handleLocationSelect}
-        fieldType="starting"
-      />
+      {/* Starting location */}
+      <div className="flex flex-row gap-x-2">
+        <SearchBar
+          initialLocation={activeRoute.startingLocation}
+          activeRouteId={activeRouteId}
+          handleLocationSelect={handleLocationSelect}
+          fieldType="starting"
+        />
+
+        {/* Useless button to reserve space */}
+        <Button size="icon" className="invisible ">
+          <TrashIcon size={20} />
+        </Button>
+      </div>
+
+      {/* Stops */}
       {activeRoute.stops.map((stop, i) => (
         <div key={`stop-${i}`} className="flex flex-row gap-x-2 items-center">
           <SearchBar
@@ -126,12 +136,22 @@ export function RoutePlanner() {
           </Tooltip>
         </div>
       ))}
-      <SearchBar
-        initialLocation={activeRoute.destination}
-        activeRouteId={activeRouteId}
-        handleLocationSelect={handleLocationSelect}
-        fieldType="destination"
-      />
+
+      {/* Destination */}
+      <div className="flex flex-row gap-x-2">
+        <SearchBar
+          initialLocation={activeRoute.destination}
+          activeRouteId={activeRouteId}
+          handleLocationSelect={handleLocationSelect}
+          fieldType="destination"
+        />
+        {/* Useless button to reserve space */}
+        <Button size="icon" className="invisible ">
+          <TrashIcon size={20} />
+        </Button>
+      </div>
+
+      {/* Utilities */}
       <div className="grid grid-cols-3">
         <div className="flex flex-col items-center">
           <Button variant="default" size="icon" onClick={addStop}>
