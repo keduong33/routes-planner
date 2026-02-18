@@ -104,7 +104,7 @@ export function RouteInfo() {
 
           <div className="mt-2 flex flex-row justify-between border-t pt-2 text-sm font-semibold">
             <span>Overall duration</span>
-            <span>{formatDuration()}</span>
+            <span>{formatDuration(totalDurationSeconds)}</span>
           </div>
           <p className="text-xs text-muted-foreground">
             (Disclaimer: ETA could be inaccurate)
