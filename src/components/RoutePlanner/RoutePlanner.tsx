@@ -9,9 +9,10 @@ import type { NormalizedLocation } from '../../api/geo/types'
 import type { RouteOption } from '../../types'
 import type { FieldType } from '../MapDrawer/SearchBar/SearchBar'
 import { SearchBar } from '../MapDrawer/SearchBar/SearchBar'
-import { useRoutePlanner } from './RoutePlannerContext'
 import { Button } from '../ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
+import { RouteInfo } from './RouteInfo'
+import { useRoutePlanner } from './RoutePlannerContext'
 
 export function RoutePlanner() {
   const { setRouteOptions, activeRouteId, activeRoute, calculateRoute } =
@@ -149,6 +150,8 @@ export function RoutePlanner() {
           <p>Calculate route</p>
         </div>
       </div>
+
+      <RouteInfo />
     </div>
   )
 }

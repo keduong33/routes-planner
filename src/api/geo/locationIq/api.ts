@@ -44,11 +44,11 @@ export const locationIqApi = {
     coordinates += `;${convertToCoordinates(route.destination)}`
 
     const res = await fetch(
-      `${locationIqUrl}directions/driving/${coordinates}?key=${key}&steps=false&geometries=geojson`,
+      `${locationIqUrl}directions/driving/${coordinates}?key=${key}&steps=false&geometries=geojson&overview=full`,
       options,
     )
 
-    const data = await res.json() as Direction
+    const data = (await res.json()) as Direction
 
     return data
   },
