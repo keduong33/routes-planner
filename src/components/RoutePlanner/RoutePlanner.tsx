@@ -3,31 +3,19 @@ import {
   MapPinPlusIcon,
   TrashIcon,
 } from '@phosphor-icons/react'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import type { UUIDTypes } from 'uuid'
-import { useDirection } from '../../api/geo/hooks'
 import type { NormalizedLocation } from '../../api/geo/types'
 import type { RouteOption } from '../../types'
-import { newRoute } from '../../types'
 import type { FieldType } from '../MapDrawer/SearchBar/SearchBar'
 import { SearchBar } from '../MapDrawer/SearchBar/SearchBar'
+import { useRoutePlanner } from './RoutePlannerContext'
 import { Button } from '../ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 
-type RouteProps = {}
-
 export function RoutePlanner() {
-  const [routeOptions, setRouteOptions] = useState<Array<RouteOption>>([
-    newRoute,
-  ])
-  const [activeRouteId, setActiveRouteId] = useState<UUIDTypes>(
-    routeOptions[0].id,
-  )
-  const activeRoute = activeRouteId
-    ? routeOptions.find((route) => route.id === activeRouteId)
-    : undefined
-
-  const { refetch } = useDirection(activeRoute)
+  const { setRouteOptions, activeRouteId, activeRoute, calculateRoute } =
+    useRoutePlanner()
 
   const handleLocationSelect = useCallback(
     (
@@ -84,14 +72,9 @@ export function RoutePlanner() {
     [activeRouteId],
   )
 
-  const calculateRoute = useCallback(() => {
-    if (!activeRoute) {
-      console.error('No active route')
-      return
-    }
-    console.log(activeRoute)
-    refetch()
-  }, [activeRoute])
+  const handleCalculateRoute = useCallback(() => {
+    void calculateRoute()
+  }, [calculateRoute])
 
   if (!activeRouteId || !activeRoute) {
     console.log('no active route id')
@@ -160,7 +143,7 @@ export function RoutePlanner() {
           <p>Add new stop</p>
         </div>
         <div className="flex flex-col items-center">
-          <Button variant="default" size="icon" onClick={calculateRoute}>
+          <Button variant="default" size="icon" onClick={handleCalculateRoute}>
             <CalculatorIcon size={20} />
           </Button>
           <p>Calculate route</p>

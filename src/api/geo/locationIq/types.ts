@@ -36,24 +36,33 @@ export interface Address {
 
 export interface Direction {
   code: string
-  waypoints: Waypoints
-  routes: Routes
+  waypoints: Array<Waypoint>
+  routes: Array<Route>
 }
-export interface Waypoints {
+
+export interface Waypoint {
+  hint?: string
   distance: number
-  location?: Array<number> | null
+  location: [number, number]
   name: string
 }
-export interface Routes {
-  legs: Legs
+
+export type GeoJsonLineString = {
+  type: 'LineString'
+  coordinates: Array<[number, number]>
+}
+
+export interface Route {
+  legs: Array<Leg>
   weight_name: string
-  geometry: string
+  geometry: string | GeoJsonLineString
   weight: number
   distance: number
   duration: number
 }
-export interface Legs {
-  steps?: Array<null> | null
+
+export interface Leg {
+  steps?: Array<unknown>
   weight: number
   distance: number
   summary: string

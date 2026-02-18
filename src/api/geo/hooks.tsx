@@ -28,7 +28,7 @@ export function useDirection(route?: RouteOption) {
     queryKey: ['direction', provider, route],
     queryFn: () => {
       if (!route) throw new Error('No route for direction')
-      geoAPI.getDirections(route)
+      return geoAPI.getDirections(route)
     },
     ...baseUseQuery,
   })

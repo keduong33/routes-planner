@@ -1,6 +1,6 @@
 import type { RouteOption } from '../../../types'
 import type { NormalizedLocation } from '../types'
-import type { Location } from './types'
+import type { Direction, Location } from './types'
 
 const locationIqUrl = 'https://us1.locationiq.com/v1/'
 const options = { method: 'GET', headers: { accept: 'application/json' } }
@@ -48,7 +48,9 @@ export const locationIqApi = {
       options,
     )
 
-    return res
+    const data = await res.json() as Direction
+
+    return data
   },
 }
 
