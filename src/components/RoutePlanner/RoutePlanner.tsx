@@ -73,7 +73,7 @@ export function RoutePlanner() {
   }, [calculateRoute])
 
   return (
-    <div className="flex flex-col gap-y-3 h-full">
+    <div className="flex flex-col gap-y-3 h-screen min-h-0">
       {/* Starting location */}
       <div className="flex flex-row gap-x-2">
         <SearchBar
@@ -155,7 +155,9 @@ export function RoutePlanner() {
         </div>
       </div>
 
-      <RouteInfo />
+      <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+        <RouteInfo />
+      </div>
     </div>
   )
 }

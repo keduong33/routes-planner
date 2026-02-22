@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import {
   MapContainer,
   Marker,
@@ -35,25 +35,29 @@ export const Route = createFileRoute('/')({
 })
 
 function RoutePolyline() {
-  const { direction } = useRoutePlanner()
+  const { routeOptions } = useRoutePlanner()
   const map = useMap()
 
-  const latLngs = useMemo(() => {
-    const geom = direction?.routes[0].geometry
-    if (!geom || typeof geom === 'string') return null
-    if (geom.type !== 'LineString') return null
-    return geom.coordinates.map(([lon, lat]) => [lat, lon] as [number, number])
-  }, [direction])
+  const allLatLongs = useMemo(() => {
+    return routeOptions
+      .map((routeOption) => {
+        const geom = routeOption.direction?.routes[0].geometry
+        if (!geom || typeof geom === 'string') return null
+        return geom.coordinates.map(
+          ([lon, lat]) => [lat, lon] as [number, number],
+        )
+      })
+      .filter((latLong) => latLong !== null)
+  }, [routeOptions])
 
-  useEffect(() => {
-    if (!latLngs?.length) return
-    map.fitBounds(latLngs, { padding: [20, 20] })
-  }, [latLngs, map])
+  //   useEffect(() => {
+  //     if (allLatLongs.length == 0) return
+  //     map.fitBounds(allLatLongs[0], { padding: [20, 20] })
+  //   }, [allLatLongs, map])
 
-  if (!latLngs?.length) return null
   return (
     <Polyline
-      positions={latLngs}
+      positions={allLatLongs}
       pathOptions={{ color: '#2563eb', weight: 5 }}
     />
   )
@@ -63,7 +67,6 @@ function RouteMarkers() {
   const { activeRoute } = useRoutePlanner()
 
   const points = useMemo(() => {
-    if (!activeRoute) return []
     const locs = [
       activeRoute.startingLocation,
       ...activeRoute.stops,
