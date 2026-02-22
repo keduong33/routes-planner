@@ -23,6 +23,7 @@ export function MapDrawer() {
       <SheetContent
         side="left"
         className={`w-full sm:w-[350px] md:w-[50vw] lg:w-[35vw] z-[800] p-2`}
+        onInteractOutside={(e) => e.preventDefault()}
       >
         <SheetTitle>Route planner</SheetTitle>
         <RoutePlanner />
