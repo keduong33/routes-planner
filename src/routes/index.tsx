@@ -1,12 +1,19 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useEffect, useMemo, useState } from 'react'
-import { MapContainer, Marker, Polyline, TileLayer, useMap } from 'react-leaflet'
+import { useEffect, useMemo } from 'react'
+import {
+  MapContainer,
+  Marker,
+  Polyline,
+  TileLayer,
+  useMap,
+} from 'react-leaflet'
 import { ControlMenu } from '../components/ControlMenu'
 import { MapDrawer } from '../components/MapDrawer/MapDrawer'
-import { RoutePlannerProvider, useRoutePlanner } from '../components/RoutePlanner/RoutePlannerContext'
+import {
+  RoutePlannerProvider,
+  useRoutePlanner,
+} from '../components/RoutePlanner/RoutePlannerContext'
 import { TooltipProvider } from '../components/ui/tooltip'
-import { Button } from '@/components/ui/button'
-import { MagnifyingGlassIcon } from '@phosphor-icons/react'
 
 const tiles: Array<{ attribution: string; url: string }> = [
   {
@@ -32,7 +39,7 @@ function RoutePolyline() {
   const map = useMap()
 
   const latLngs = useMemo(() => {
-    const geom = direction?.routes?.[0]?.geometry
+    const geom = direction?.routes[0].geometry
     if (!geom || typeof geom === 'string') return null
     if (geom.type !== 'LineString') return null
     return geom.coordinates.map(([lon, lat]) => [lat, lon] as [number, number])
@@ -44,7 +51,12 @@ function RoutePolyline() {
   }, [latLngs, map])
 
   if (!latLngs?.length) return null
-  return <Polyline positions={latLngs} pathOptions={{ color: '#2563eb', weight: 5 }} />
+  return (
+    <Polyline
+      positions={latLngs}
+      pathOptions={{ color: '#2563eb', weight: 5 }}
+    />
+  )
 }
 
 function RouteMarkers() {
@@ -70,7 +82,6 @@ function RouteMarkers() {
 }
 
 function AppInner() {
-
   return (
     <div className="w-full">
       <MapDrawer />
@@ -82,7 +93,10 @@ function AppInner() {
         zoomControl={false}
         doubleClickZoom={false}
       >
-        <TileLayer attribution={`&copy; ${chosenTile.attribution}`} url={chosenTile.url} />
+        <TileLayer
+          attribution={`&copy; ${chosenTile.attribution}`}
+          url={chosenTile.url}
+        />
         <RouteMarkers />
         <RoutePolyline />
         <ControlMenu />

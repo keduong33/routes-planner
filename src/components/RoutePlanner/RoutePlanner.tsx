@@ -149,6 +149,7 @@ export function RoutePlanner() {
           </Button>
           <p>Calculate route</p>
         </div>
+        <div className="flex flex-col items-center"></div>
       </div>
 
       <RouteInfo />
