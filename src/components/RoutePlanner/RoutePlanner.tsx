@@ -1,22 +1,14 @@
 import type { DragEndEvent } from '@dnd-kit/react'
 import { DragDropProvider } from '@dnd-kit/react'
-import { isSortable, useSortable } from '@dnd-kit/react/sortable'
-import {
-  CalculatorIcon,
-  DotsSixVerticalIcon,
-  MapPinPlusIcon,
-  PathIcon,
-  TrashIcon,
-} from '@phosphor-icons/react'
+import { isSortable } from '@dnd-kit/react/sortable'
 import { useCallback } from 'react'
 import type { NormalizedLocation } from '../../api/geo/types'
 import { genStopId } from '../../types'
 import type { FieldType } from '../MapDrawer/SearchBar/SearchBar'
-import { SearchBar } from '../MapDrawer/SearchBar/SearchBar'
-import { Button } from '../ui/button'
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import { RouteInfo } from './RouteInfo'
 import { useRoutePlanner } from './RoutePlannerContext'
+import { RouteUtilities } from './RouteUtilities'
+import { SortableStopRow } from './SortableStopRow'
 
 function arrayMove<T>(arr: Array<T>, from: number, to: number): Array<T> {
   const newItems = [...arr]
@@ -25,71 +17,10 @@ function arrayMove<T>(arr: Array<T>, from: number, to: number): Array<T> {
   return newItems
 }
 
-function SortableStopRow({
-  stop,
-  stopIndex,
-  fieldType,
-  onLocationSelect,
-  onRemove,
-  canRemove,
-}: {
-  stop: { id: string; location: NormalizedLocation | null }
-  stopIndex: number
-  fieldType: FieldType
-  onLocationSelect: (location: NormalizedLocation, stopIndex?: number) => void
-  onRemove: (i: number) => void
-  canRemove: boolean
-}) {
-  const { ref, handleRef, isDragging } = useSortable({
-    id: stop.id,
-    index: stopIndex,
-  })
-
-  return (
-    <div
-      ref={ref}
-      className={`flex flex-row gap-x-2 items-center ${isDragging ? 'opacity-50' : ''}`}
-    >
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            ref={handleRef}
-            size="icon"
-            variant="ghost"
-            className="cursor-grab active:cursor-grabbing touch-none"
-            aria-label="Drag to reorder"
-          >
-            <DotsSixVerticalIcon size={20} />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Drag to reorder</TooltipContent>
-      </Tooltip>
-      <SearchBar
-        initialLocation={stop.location}
-        handleLocationSelect={onLocationSelect}
-        stopIndex={stopIndex}
-        fieldType={fieldType}
-      />
-      {canRemove ? (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              size="icon"
-              onClick={() => onRemove(stopIndex)}
-              variant="ghost"
-            >
-              <TrashIcon size={20} />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Remove stop</TooltipContent>
-        </Tooltip>
-      ) : (
-        <Button size="icon" className="invisible">
-          <TrashIcon size={20} />
-        </Button>
-      )}
-    </div>
-  )
+function getFieldType(i: number, routeLength: number): FieldType {
+  if (i === 0) return 'starting'
+  if (i === routeLength - 1) return 'destination'
+  return 'stop'
 }
 
 export function RoutePlanner() {
@@ -157,11 +88,9 @@ export function RoutePlanner() {
     void calculateRoute()
   }, [calculateRoute])
 
-  const getFieldType = (i: number): FieldType => {
-    if (i === 0) return 'starting'
-    if (i === activeRoute.stops.length - 1) return 'destination'
-    return 'stop'
-  }
+  const handleCalculateOptimizedRoute = useCallback(() => {
+    void calculateOptimizedRoute()
+  }, [calculateOptimizedRoute])
 
   return (
     <div className="flex flex-col gap-y-3 h-screen min-h-0">
@@ -171,7 +100,7 @@ export function RoutePlanner() {
             key={stop.id}
             stop={stop}
             stopIndex={i}
-            fieldType={getFieldType(i)}
+            fieldType={getFieldType(i, activeRoute.stops.length)}
             onLocationSelect={handleLocationSelect}
             onRemove={removeStop}
             canRemove={activeRoute.stops.length > 2}
@@ -179,42 +108,13 @@ export function RoutePlanner() {
         ))}
       </DragDropProvider>
 
-      {/* Utilities */}
-      <div className="grid grid-cols-3">
-        <div className="flex flex-col items-center">
-          <Button variant="default" size="icon" onClick={addStop}>
-            <MapPinPlusIcon size={20} />
-          </Button>
-          <p>Add new stop</p>
-        </div>
-        <div className="flex flex-col items-center">
-          <Button variant="default" size="icon" onClick={handleCalculateRoute}>
-            <CalculatorIcon size={20} />
-          </Button>
-          <p>Calculate route</p>
-        </div>
-        <div className="flex flex-col items-center">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="default"
-                size="icon"
-                onClick={() => void calculateOptimizedRoute()}
-              >
-                <PathIcon size={20} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              Find the shortest route (optimize order)
-            </TooltipContent>
-          </Tooltip>
-          <p>Best route</p>
-        </div>
-      </div>
+      <RouteUtilities
+        addStop={addStop}
+        handleCalculateRoute={handleCalculateRoute}
+        handleCalculateOptimizedRoute={handleCalculateOptimizedRoute}
+      />
 
-      <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-        <RouteInfo />
-      </div>
+      <RouteInfo />
     </div>
   )
 }
