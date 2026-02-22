@@ -68,3 +68,18 @@ export interface Leg {
   summary: string
   duration: number
 }
+
+/**
+ * Optimize API response (TSP). Uses "trips" instead of "routes".
+ * https://docs.locationiq.com/docs/optimize-api
+ */
+export interface OptimizeWaypoint extends Waypoint {
+  waypoint_index: number
+  trips_index: number
+}
+
+export interface OptimizeResponse {
+  code: string
+  waypoints: Array<OptimizeWaypoint>
+  trips: Array<Route>
+}

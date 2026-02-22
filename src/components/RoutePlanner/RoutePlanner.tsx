@@ -1,6 +1,7 @@
 import {
   CalculatorIcon,
   MapPinPlusIcon,
+  PathIcon,
   TrashIcon,
 } from '@phosphor-icons/react'
 import { useCallback } from 'react'
@@ -15,8 +16,13 @@ import { RouteInfo } from './RouteInfo'
 import { useRoutePlanner } from './RoutePlannerContext'
 
 export function RoutePlanner() {
-  const { setRouteOptions, activeRouteId, activeRoute, calculateRoute } =
-    useRoutePlanner()
+  const {
+    setRouteOptions,
+    activeRouteId,
+    activeRoute,
+    calculateRoute,
+    calculateOptimizedRoute,
+  } = useRoutePlanner()
 
   const handleLocationSelect = useCallback(
     (
@@ -149,7 +155,23 @@ export function RoutePlanner() {
           </Button>
           <p>Calculate route</p>
         </div>
-        <div className="flex flex-col items-center"></div>
+        <div className="flex flex-col items-center">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="default"
+                size="icon"
+                onClick={() => void calculateOptimizedRoute()}
+              >
+                <PathIcon size={20} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Find the shortest route (optimize order)
+            </TooltipContent>
+          </Tooltip>
+          <p>Best route</p>
+        </div>
       </div>
 
       <RouteInfo />

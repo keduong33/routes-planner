@@ -33,3 +33,14 @@ export function useDirection(route?: RouteOption) {
     ...baseUseQuery,
   })
 }
+
+export function useOptimizedDirection(route?: RouteOption) {
+  return useQuery({
+    queryKey: ['optimizedDirection', provider, route],
+    queryFn: () => {
+      if (!route) throw new Error('No route for optimized direction')
+      return geoAPI.getOptimizedRoute(route)
+    },
+    ...baseUseQuery,
+  })
+}

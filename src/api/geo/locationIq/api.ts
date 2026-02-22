@@ -1,6 +1,6 @@
 import type { RouteOption } from '../../../types'
 import type { NormalizedLocation } from '../types'
-import type { Direction, Location } from './types'
+import type { Direction, Location, OptimizeResponse } from './types'
 
 const locationIqUrl = 'https://us1.locationiq.com/v1/'
 const options = { method: 'GET', headers: { accept: 'application/json' } }
@@ -51,6 +51,52 @@ export const locationIqApi = {
     const data = (await res.json()) as Direction
 
     return data
+  },
+
+  /**
+   * Optimize API (TSP): reorders stops for a shorter route.
+   * https://docs.locationiq.com/docs/optimize-api
+   */
+  async getOptimizedRoute(route: RouteOption): Promise<Direction> {
+    if (route.stops.length + 2 > 25) {
+      throw new Error('Exceed maximum of 25 locations')
+    }
+
+    if (!route.startingLocation || !route.destination) {
+      throw new Error('No starting location/destination')
+    }
+
+    let coordinates = convertToCoordinates(route.startingLocation)
+    route.stops.forEach((stop) => {
+      if (stop) coordinates += `;${convertToCoordinates(stop)}`
+    })
+    coordinates += `;${convertToCoordinates(route.destination)}`
+
+    const params = new URLSearchParams({
+      key,
+      roundtrip: 'false',
+      source: 'first',
+      destination: 'last',
+      steps: '',
+      geometries: 'geojson',
+      overview: 'full',
+    })
+
+    const res = await fetch(
+      `${locationIqUrl}optimize/driving/${coordinates}?${params}`,
+      options,
+    )
+
+    const data = (await res.json()) as OptimizeResponse
+    if (data.code !== 'Ok') {
+      throw new Error(data.code)
+    }
+
+    return {
+      code: data.code,
+      waypoints: data.waypoints,
+      routes: data.trips,
+    }
   },
 }
 

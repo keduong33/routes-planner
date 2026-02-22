@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useState } from 'react'
 import type { UUIDTypes } from 'uuid'
-import { useDirection } from '../../api/geo/hooks'
+import { useDirection, useOptimizedDirection } from '../../api/geo/hooks'
 import type { Direction } from '../../api/geo/locationIq/types'
 import type { RouteOption } from '../../types'
 import { newRoute } from '../../types'
@@ -15,7 +15,9 @@ type RoutePlannerContextValue = {
   direction: Direction | undefined
   isDirectionFetching: boolean
   directionError: unknown
+
   calculateRoute: () => Promise<void>
+  calculateOptimizedRoute: () => Promise<void>
 }
 
 const RoutePlannerContext = createContext<RoutePlannerContextValue | null>(null)
@@ -25,7 +27,9 @@ export function RoutePlannerProvider({
 }: {
   children: React.ReactNode
 }) {
-  const [routeOptions, setRouteOptions] = useState<Array<RouteOption>>([newRoute])
+  const [routeOptions, setRouteOptions] = useState<Array<RouteOption>>([
+    newRoute,
+  ])
   const [activeRouteId, setActiveRouteId] = useState<UUIDTypes>(newRoute.id)
 
   const activeRoute = activeRouteId
@@ -33,12 +37,17 @@ export function RoutePlannerProvider({
     : undefined
 
   const directionQuery = useDirection(activeRoute)
+  const optimizedQuery = useOptimizedDirection(activeRoute)
 
   const value = useMemo<RoutePlannerContextValue>(() => {
     const calculateRoute = async () => {
       const route = activeRoute
       if (!route?.startingLocation || !route.destination) return
       await directionQuery.refetch()
+    }
+
+    const calculateOptimizedRoute = async () => {
+      await optimizedQuery.refetch()
     }
 
     return {
@@ -52,6 +61,8 @@ export function RoutePlannerProvider({
       isDirectionFetching: directionQuery.isFetching,
       directionError: directionQuery.error,
       calculateRoute,
+
+      calculateOptimizedRoute,
     }
   }, [
     activeRoute,
@@ -72,7 +83,7 @@ export function RoutePlannerProvider({
 
 export function useRoutePlanner() {
   const ctx = useContext(RoutePlannerContext)
-  if (!ctx) throw new Error('useRoutePlanner must be used within RoutePlannerProvider')
+  if (!ctx)
+    throw new Error('useRoutePlanner must be used within RoutePlannerProvider')
   return ctx
 }
-
