@@ -5,7 +5,6 @@ import {
   TrashIcon,
 } from '@phosphor-icons/react'
 import { useCallback } from 'react'
-import type { UUIDTypes } from 'uuid'
 import type { NormalizedLocation } from '../../api/geo/types'
 import type { RouteOption } from '../../types'
 import type { FieldType } from '../MapDrawer/SearchBar/SearchBar'
@@ -18,7 +17,7 @@ import { useRoutePlanner } from './RoutePlannerContext'
 export function RoutePlanner() {
   const {
     setRouteOptions,
-    activeRouteId,
+    setActiveRoute,
     activeRoute,
     calculateRoute,
     calculateOptimizedRoute,
@@ -26,67 +25,52 @@ export function RoutePlanner() {
 
   const handleLocationSelect = useCallback(
     (
-      routeOptionId: UUIDTypes,
       fieldType: FieldType,
       location: NormalizedLocation,
       stopIndex?: number,
     ) => {
-      setRouteOptions((routes) =>
-        routes.map((route) => {
-          if (route.id !== routeOptionId) return route
-
-          if (fieldType === 'starting') {
-            return {
-              ...route,
-              startingLocation: location,
-            } satisfies RouteOption
-          } else if (fieldType === 'destination') {
-            return { ...route, destination: location } satisfies RouteOption
-          } else if (stopIndex !== undefined) {
-            const newStops = [...route.stops]
-            newStops[stopIndex] = location
-            return { ...route, stops: newStops } satisfies RouteOption
-          } else return route
-        }),
-      )
+      setActiveRoute((prev) => {
+        if (fieldType === 'starting') {
+          return {
+            ...prev,
+            startingLocation: location,
+          } satisfies RouteOption
+        } else if (fieldType === 'destination') {
+          return {
+            ...prev,
+            destination: location,
+          } satisfies RouteOption
+        } else if (stopIndex !== undefined) {
+          const newStops = [...prev.stops]
+          newStops[stopIndex] = location
+          return { ...prev, stops: newStops } satisfies RouteOption
+        } else return prev
+      })
     },
     [],
   )
 
   const addStop = useCallback(() => {
-    if (!activeRouteId) return
-    setRouteOptions((routes) =>
-      routes.map((route) => {
-        if (route.id !== activeRouteId) return route
-        return { ...route, stops: [...route.stops, null] }
-      }),
-    )
-  }, [activeRouteId])
+    setActiveRoute((prev) => {
+      return {
+        ...prev,
+        stops: [...prev.stops, null],
+      }
+    })
+  }, [])
 
-  const removeStop = useCallback(
-    (stopIndex: number) => {
-      if (!activeRouteId) return
-      setRouteOptions((routes) =>
-        routes.map((route) => {
-          if (route.id !== activeRouteId) return route
-          return {
-            ...route,
-            stops: route.stops.filter((_, i) => i !== stopIndex),
-          }
-        }),
-      )
-    },
-    [activeRouteId],
-  )
+  const removeStop = useCallback((stopIndex: number) => {
+    setActiveRoute((prev) => {
+      return {
+        ...prev,
+        stops: prev.stops.filter((_, i) => i !== stopIndex),
+      }
+    })
+  }, [])
 
   const handleCalculateRoute = useCallback(() => {
     void calculateRoute()
   }, [calculateRoute])
-
-  if (!activeRouteId || !activeRoute) {
-    console.log('no active route id')
-    return null
-  }
 
   return (
     <div className="flex flex-col gap-y-3 h-full">
@@ -94,7 +78,6 @@ export function RoutePlanner() {
       <div className="flex flex-row gap-x-2">
         <SearchBar
           initialLocation={activeRoute.startingLocation}
-          activeRouteId={activeRouteId}
           handleLocationSelect={handleLocationSelect}
           fieldType="starting"
         />
@@ -110,7 +93,6 @@ export function RoutePlanner() {
         <div key={`stop-${i}`} className="flex flex-row gap-x-2 items-center">
           <SearchBar
             initialLocation={stop}
-            activeRouteId={activeRouteId}
             handleLocationSelect={handleLocationSelect}
             stopIndex={i}
             fieldType="stop"
@@ -131,7 +113,6 @@ export function RoutePlanner() {
       <div className="flex flex-row gap-x-2">
         <SearchBar
           initialLocation={activeRoute.destination}
-          activeRouteId={activeRouteId}
           handleLocationSelect={handleLocationSelect}
           fieldType="destination"
         />

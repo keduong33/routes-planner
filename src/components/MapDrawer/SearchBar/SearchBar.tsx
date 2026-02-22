@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { UUIDTypes } from 'uuid'
 import { useSearchAddress } from '../../../api/geo/hooks'
 import type { NormalizedLocation } from '../../../api/geo/types'
 import { Input } from '../../ui/input'
@@ -11,12 +10,10 @@ export type SearchBarProps = {
   initialLocation: NormalizedLocation | null
   fieldType: FieldType
   handleLocationSelect: (
-    routeOptionId: UUIDTypes,
     fieldType: FieldType,
     location: NormalizedLocation,
     stopIndex?: number,
   ) => void
-  activeRouteId: UUIDTypes
   stopIndex?: number
 }
 
@@ -29,7 +26,6 @@ const fieldTypeToPlaceholderText = new Map<FieldType, string>([
 export function SearchBar({
   initialLocation,
   fieldType,
-  activeRouteId,
   handleLocationSelect,
   stopIndex,
 }: SearchBarProps) {
@@ -72,9 +68,9 @@ export function SearchBar({
       setSearchedAddress(location.displayName)
       setSelectedLocation(location)
       setShowDropdown(false)
-      handleLocationSelect(activeRouteId, fieldType, location, stopIndex)
+      handleLocationSelect(fieldType, location, stopIndex)
     },
-    [activeRouteId, fieldType, stopIndex, handleLocationSelect],
+    [fieldType, stopIndex, handleLocationSelect],
   )
 
   const handleInputChange = (value: string) => {

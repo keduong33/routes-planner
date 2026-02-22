@@ -1,5 +1,4 @@
 import { createContext, useContext, useMemo, useState } from 'react'
-import type { UUIDTypes } from 'uuid'
 import { useDirection, useOptimizedDirection } from '../../api/geo/hooks'
 import type { Direction } from '../../api/geo/locationIq/types'
 import type { RouteOption } from '../../types'
@@ -8,9 +7,9 @@ import { newRoute } from '../../types'
 type RoutePlannerContextValue = {
   routeOptions: Array<RouteOption>
   setRouteOptions: React.Dispatch<React.SetStateAction<Array<RouteOption>>>
-  activeRouteId: UUIDTypes
-  setActiveRouteId: React.Dispatch<React.SetStateAction<UUIDTypes>>
-  activeRoute: RouteOption | undefined
+
+  setActiveRoute: React.Dispatch<React.SetStateAction<RouteOption>>
+  activeRoute: RouteOption
 
   direction: Direction | undefined
   isDirectionFetching: boolean
@@ -27,23 +26,22 @@ export function RoutePlannerProvider({
 }: {
   children: React.ReactNode
 }) {
-  const [routeOptions, setRouteOptions] = useState<Array<RouteOption>>([
-    newRoute,
-  ])
-  const [activeRouteId, setActiveRouteId] = useState<UUIDTypes>(newRoute.id)
+  const [routeOptions, setRouteOptions] = useState<Array<RouteOption>>([])
 
-  const activeRoute = activeRouteId
-    ? routeOptions.find((route) => route.id === activeRouteId)
-    : undefined
+  const [activeRoute, setActiveRoute] = useState<RouteOption>(newRoute)
 
   const directionQuery = useDirection(activeRoute)
   const optimizedQuery = useOptimizedDirection(activeRoute)
 
   const value = useMemo<RoutePlannerContextValue>(() => {
     const calculateRoute = async () => {
-      const route = activeRoute
-      if (!route?.startingLocation || !route.destination) return
-      await directionQuery.refetch()
+      const { data } = await directionQuery.refetch()
+      if (data) {
+        setRouteOptions((prev) => [
+          ...prev,
+          { ...activeRoute, direction: data },
+        ])
+      }
     }
 
     const calculateOptimizedRoute = async () => {
@@ -53,8 +51,8 @@ export function RoutePlannerProvider({
     return {
       routeOptions,
       setRouteOptions,
-      activeRouteId,
-      setActiveRouteId,
+
+      setActiveRoute,
       activeRoute,
 
       direction: directionQuery.data,
@@ -66,7 +64,6 @@ export function RoutePlannerProvider({
     }
   }, [
     activeRoute,
-    activeRouteId,
     directionQuery.data,
     directionQuery.error,
     directionQuery.isFetching,
