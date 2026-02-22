@@ -10,7 +10,6 @@ export type SearchBarProps = {
   initialLocation: NormalizedLocation | null
   fieldType: FieldType
   handleLocationSelect: (
-    fieldType: FieldType,
     location: NormalizedLocation,
     stopIndex?: number,
   ) => void
@@ -68,7 +67,7 @@ export function SearchBar({
       setSearchedAddress(location.displayName)
       setSelectedLocation(location)
       setShowDropdown(false)
-      handleLocationSelect(fieldType, location, stopIndex)
+      handleLocationSelect(location, stopIndex)
     },
     [fieldType, stopIndex, handleLocationSelect],
   )

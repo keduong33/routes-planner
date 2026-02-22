@@ -27,21 +27,20 @@ export const locationIqApi = {
   },
 
   async getDirections(route: RouteOption) {
-    if (route.stops.length + 2 > 25) {
+    if (route.stops.length > 25) {
       throw new Error('Exceed maximum of 25 locations')
     }
 
-    if (!route.startingLocation || !route.destination) {
-      throw new Error('No starting location/destination')
+    const locations = route.stops
+      .map((s) => s.location)
+      .filter((loc): loc is NormalizedLocation => loc != null)
+    if (locations.length < 2) {
+      throw new Error('Need at least start and destination')
     }
 
-    let coordinates = convertToCoordinates(route.startingLocation)
-
-    route.stops.forEach((stop) => {
-      if (stop) coordinates += `;${convertToCoordinates(stop)}`
-    })
-
-    coordinates += `;${convertToCoordinates(route.destination)}`
+    const coordinates = locations
+      .map((loc) => convertToCoordinates(loc))
+      .join(';')
 
     const res = await fetch(
       `${locationIqUrl}directions/driving/${coordinates}?key=${key}&steps=false&geometries=geojson&overview=full`,
@@ -58,19 +57,20 @@ export const locationIqApi = {
    * https://docs.locationiq.com/docs/optimize-api
    */
   async getOptimizedRoute(route: RouteOption): Promise<Direction> {
-    if (route.stops.length + 2 > 25) {
+    if (route.stops.length > 25) {
       throw new Error('Exceed maximum of 25 locations')
     }
 
-    if (!route.startingLocation || !route.destination) {
-      throw new Error('No starting location/destination')
+    const locations = route.stops
+      .map((s) => s.location)
+      .filter((loc): loc is NormalizedLocation => loc != null)
+    if (locations.length < 2) {
+      throw new Error('Need at least start and destination')
     }
 
-    let coordinates = convertToCoordinates(route.startingLocation)
-    route.stops.forEach((stop) => {
-      if (stop) coordinates += `;${convertToCoordinates(stop)}`
-    })
-    coordinates += `;${convertToCoordinates(route.destination)}`
+    const coordinates = locations
+      .map((loc) => convertToCoordinates(loc))
+      .join(';')
 
     const params = new URLSearchParams({
       key,

@@ -1,12 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useMemo } from 'react'
-import {
-  MapContainer,
-  Marker,
-  Polyline,
-  TileLayer,
-  useMap,
-} from 'react-leaflet'
+import { MapContainer, Marker, Polyline, TileLayer } from 'react-leaflet'
 import { ControlMenu } from '../components/ControlMenu'
 import { MapDrawer } from '../components/MapDrawer/MapDrawer'
 import {
@@ -36,7 +30,6 @@ export const Route = createFileRoute('/')({
 
 function RoutePolyline() {
   const { routeOptions } = useRoutePlanner()
-  const map = useMap()
 
   const allLatLongs = useMemo(() => {
     return routeOptions
@@ -67,12 +60,10 @@ function RouteMarkers() {
   const { activeRoute } = useRoutePlanner()
 
   const points = useMemo(() => {
-    const locs = [
-      activeRoute.startingLocation,
-      ...activeRoute.stops,
-      activeRoute.destination,
-    ].filter(Boolean)
-    return locs.map((l) => [l!.lat, l!.lon] as [number, number])
+    return activeRoute.stops
+      .map((s) => s.location)
+      .filter((l): l is NonNullable<typeof l> => l != null)
+      .map((l) => [l.lat, l.lon] as [number, number])
   }, [activeRoute])
 
   return (

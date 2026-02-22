@@ -32,18 +32,18 @@ function formatDistance(meters: number | undefined) {
   return `${(meters / 1000).toFixed(1)} km`
 }
 
+/** Returns one label per defined stop (in order); used for leg labels. */
 function getLocationLabels(routeOption: RouteOption) {
-  if (!routeOption.startingLocation || !routeOption.destination) return null
-  const stops = routeOption.stops.filter((stop) => !!stop)
-  const locations = [
-    routeOption.startingLocation,
-    ...stops,
-    routeOption.destination,
-  ]
-  return locations.map((_, index) => {
-    if (index === 0) return 'Starting'
-    if (index === locations.length - 1) return 'Destination'
-    return `Stop ${index}`
+  const stops = routeOption.stops
+  if (stops.length < 2) return null
+  const definedIndices = stops
+    .map((s, i) => (s.location != null ? i : null))
+    .filter((i): i is number => i != null)
+  if (definedIndices.length < 2) return null
+  return definedIndices.map((position) => {
+    if (position === 0) return 'Starting'
+    if (position === stops.length - 1) return 'Destination'
+    return `Stop ${position}`
   })
 }
 
