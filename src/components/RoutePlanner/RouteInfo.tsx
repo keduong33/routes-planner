@@ -34,17 +34,7 @@ function formatDistance(meters: number | undefined) {
 
 /** Returns one label per defined stop (in order); used for leg labels. */
 function getLocationLabels(routeOption: RouteOption) {
-  const stops = routeOption.stops
-  if (stops.length < 2) return null
-  const definedIndices = stops
-    .map((s, i) => (s.location != null ? i : null))
-    .filter((i): i is number => i != null)
-  if (definedIndices.length < 2) return null
-  return definedIndices.map((position) => {
-    if (position === 0) return 'Starting'
-    if (position === stops.length - 1) return 'Destination'
-    return `Stop ${position}`
-  })
+  return routeOption.direction?.waypoints.map((wp) => wp.name)
 }
 
 function consolidateLegsForRoute({

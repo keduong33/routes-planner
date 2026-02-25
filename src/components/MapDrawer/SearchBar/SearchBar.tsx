@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSearchAddress } from '../../../api/geo/hooks'
 import type { NormalizedLocation } from '../../../api/geo/types'
@@ -149,9 +150,17 @@ export function SearchBar({
         type="search"
       />
 
+      {isLoading && (
+        <DropDown>
+          <div className="px-4 py-3">
+            <p className="text-sm text-gray-900">Loading...</p>
+          </div>
+        </DropDown>
+      )}
+
       {/* Only render suggestions if locations exist */}
       {locations && locations.length > 0 && (
-        <div className="z-[900] absolute left-0 top-full w-full flex flex-col mt-1 bg-background border border-border shadow-lg rounded-lg overflow-hidden">
+        <DropDown>
           {locations.slice(0, 5).map((location, i) => (
             <Tooltip key={location.id}>
               <TooltipTrigger asChild>
@@ -165,17 +174,25 @@ export function SearchBar({
                   }}
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="truncate text-sm text-gray-900">
+                    <p className="truncate text-sm text-gray-900">
                       {location.displayName}
-                    </div>
+                    </p>
                   </div>
                 </div>
               </TooltipTrigger>
               <TooltipContent>{location.displayName}</TooltipContent>
             </Tooltip>
           ))}
-        </div>
+        </DropDown>
       )}
+    </div>
+  )
+}
+
+function DropDown({ children }: { children: ReactNode }) {
+  return (
+    <div className="z-[900] absolute left-0 top-full w-full flex flex-col mt-1 bg-background border border-border shadow-lg rounded-lg overflow-hidden">
+      {children}
     </div>
   )
 }

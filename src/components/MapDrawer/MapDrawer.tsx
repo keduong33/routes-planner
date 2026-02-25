@@ -24,6 +24,7 @@ export function MapDrawer() {
         side="left"
         className={`w-full md:w-[50vw] lg:w-[500px] z-[800] p-2`}
         onInteractOutside={(e) => e.preventDefault()}
+        onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <SheetTitle>Route planner</SheetTitle>
         <RoutePlanner />
