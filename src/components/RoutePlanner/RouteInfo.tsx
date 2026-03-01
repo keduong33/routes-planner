@@ -88,7 +88,14 @@ function RouteOptionCard({
         role="button"
         className="flex flex-row items-center justify-between gap-2 transition-colors hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-ring rounded -m-1 p-1"
       >
-        <p className="font-medium">Route {displayIndex + 1}</p>
+        <div className="flex flex-col">
+          <p className="font-medium">Route {displayIndex + 1}</p>
+          {routeOption.type === 'optimized' && (
+            <p className="text-xs font-semibold text-emerald-600">
+              {' (Best)'}
+            </p>
+          )}
+        </div>
         <div className="flex flex-row items-center gap-3">
           <span className="text-sm text-muted-foreground">
             {formatDuration(route.duration)} · {formatDistance(route.distance)}

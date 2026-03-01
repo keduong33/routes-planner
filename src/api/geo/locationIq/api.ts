@@ -77,7 +77,7 @@ export const locationIqApi = {
       roundtrip: 'false',
       source: 'first',
       destination: 'last',
-      steps: '',
+      steps: 'false',
       geometries: 'geojson',
       overview: 'full',
     })

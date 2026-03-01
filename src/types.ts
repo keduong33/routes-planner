@@ -9,6 +9,7 @@ export type StopEntry = {
 export type RouteOption = {
   stops: Array<StopEntry>
   direction: Direction | null
+  type: 'route' | 'optimized'
 }
 
 export function genStopId() {
@@ -21,4 +22,5 @@ export const newRoute: RouteOption = {
     { id: genStopId(), location: null },
   ],
   direction: null,
+  type: 'route',
 }

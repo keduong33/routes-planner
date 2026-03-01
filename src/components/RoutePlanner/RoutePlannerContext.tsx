@@ -39,13 +39,19 @@ export function RoutePlannerProvider({
       if (data) {
         setRouteOptions((prev) => [
           ...prev,
-          { ...activeRoute, direction: data },
+          { ...activeRoute, direction: data, type: 'route' },
         ])
       }
     }
 
     const calculateOptimizedRoute = async () => {
-      await optimizedQuery.refetch()
+      const { data } = await optimizedQuery.refetch()
+      if (data) {
+        setRouteOptions((prev) => [
+          ...prev,
+          { ...activeRoute, direction: data, type: 'optimized' },
+        ])
+      }
     }
 
     return {
