@@ -3,19 +3,13 @@ import { DragDropProvider } from '@dnd-kit/react'
 import { isSortable } from '@dnd-kit/react/sortable'
 import { useCallback } from 'react'
 import type { NormalizedLocation } from '../../api/geo/types'
+import { arrayMove } from '../../lib/utils'
 import { genStopId } from '../../types'
 import type { FieldType } from '../MapDrawer/SearchBar/SearchBar'
 import { RouteInfo } from './RouteInfo'
 import { useRoutePlanner } from './RoutePlannerContext'
 import { RouteUtilities } from './RouteUtilities'
 import { SortableStopRow } from './SortableStopRow'
-
-function arrayMove<T>(arr: Array<T>, from: number, to: number): Array<T> {
-  const newItems = [...arr]
-  const [removed] = newItems.splice(from, 1)
-  newItems.splice(to, 0, removed)
-  return newItems
-}
 
 function getFieldType(i: number, routeLength: number): FieldType {
   if (i === 0) return 'starting'
