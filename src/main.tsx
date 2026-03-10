@@ -15,7 +15,7 @@ import 'leaflet/dist/leaflet.css'
 import reportWebVitals from './reportWebVitals.ts'
 import './styles.css'
 
-L.Icon.mergeOptions({
+L.Icon.Default.mergeOptions({
   iconRetinaUrl,
   iconUrl,
   shadowUrl,
