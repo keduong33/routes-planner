@@ -35,7 +35,7 @@ export function SearchBar({
   const [selectedLocation, setSelectedLocation] =
     useState<NormalizedLocation | null>(initialLocation)
 
-  const [showDropdown, setShowDropdown] = useState(false)
+  const [_showDropdown, setShowDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const [selectedIndex, setSelectedIndex] = useState(-1)
 

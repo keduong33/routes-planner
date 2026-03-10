@@ -6,7 +6,7 @@ import { ContextMenu } from './ContextMenu'
 import { Button } from './ui/button'
 
 export function ControlMenu() {
-  const [isLoading, setIsLoading] = useState(false)
+  const [_isLoading, setIsLoading] = useState(false)
   const [position, setPosition] = useState<LatLng | null>(null)
   const [newPosition, setNewPosition] = useState<LatLng | null>(null)
   const map = useMapEvents({

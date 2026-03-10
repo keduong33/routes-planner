@@ -104,6 +104,7 @@ function convertToCoordinates(location: NormalizedLocation) {
   return `${location.lon},${location.lat}`
 }
 
+// @ts-ignore used during dev
 const locationIqFakeData = {
   search: [
     {

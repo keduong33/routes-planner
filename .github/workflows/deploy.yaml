@@ -18,6 +18,9 @@ concurrency:
 jobs:
     build:
         runs-on: ubuntu-latest
+        env:
+            VITE_OPEN_ROUTE_SERVICE: ${{ secrets.VITE_OPEN_ROUTE_SERVICE }}
+            VITE_LOCATION_IQ: ${{ secrets.VITE_LOCATION_IQ }}
         steps:
             - name: Checkout
               uses: actions/checkout@v4
