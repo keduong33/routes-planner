@@ -1,8 +1,8 @@
 import type { LatLng } from 'leaflet'
 import { useState } from 'react'
-import { Marker, Popup, Tooltip, useMapEvents } from 'react-leaflet'
+import { Marker, Tooltip, useMapEvents } from 'react-leaflet'
 import { CONTROL_CLASSES } from '../consts'
-import { ContextMenu } from './ContextMenu'
+// import { ContextMenu } from './ContextMenu'
 import { Button } from './ui/button'
 
 export function ControlMenu() {
@@ -50,9 +50,7 @@ export function ControlMenu() {
         </Marker>
       )}
       {newPosition && (
-        <Popup position={newPosition}>
-          <ContextMenu />
-        </Popup>
+        <Marker position={newPosition}>{/* <ContextMenu /> */}</Marker>
       )}
     </>
   )

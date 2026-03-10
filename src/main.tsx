@@ -1,4 +1,5 @@
 import { RouterProvider, createRouter } from '@tanstack/react-router'
+import L from 'leaflet'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 
@@ -7,9 +8,18 @@ import * as TanStackQueryProvider from './integrations/tanstack-query/root-provi
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
+import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
+import iconUrl from 'leaflet/dist/images/marker-icon.png'
+import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
 import 'leaflet/dist/leaflet.css'
 import reportWebVitals from './reportWebVitals.ts'
 import './styles.css'
+
+L.Icon.mergeOptions({
+  iconRetinaUrl,
+  iconUrl,
+  shadowUrl,
+})
 
 // Create a new router instance
 
