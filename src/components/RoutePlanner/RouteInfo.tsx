@@ -10,7 +10,7 @@ import { SortableRouteOptionCard } from './SortableRouteOptionCard'
 
 export function RouteInfo() {
   const { routeOptions, setRouteOptions } = useRoutePlanner()
-  const [isReordering, setIsReordering] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
 
   const hasRouteOptions = routeOptions.length > 0
 
@@ -29,7 +29,7 @@ export function RouteInfo() {
   )
 
   const handleReorder = useCallback(() => {
-    setIsReordering((prev) => !prev)
+    setIsEditing((prev) => !prev)
   }, [])
 
   if (!hasRouteOptions) {
@@ -48,7 +48,7 @@ export function RouteInfo() {
       <div className="flex flex-row items-center justify-between">
         <p className="font-bold text-md italic shrink-0">Route info</p>
         <Button variant="ghost" onClick={handleReorder}>
-          {isReordering ? 'Done' : 'Edit'}
+          {isEditing ? 'Done' : 'Edit'}
         </Button>
       </div>
       <ScrollArea className="mt-2 flex-1 min-h-0">
@@ -58,8 +58,8 @@ export function RouteInfo() {
               <SortableRouteOptionCard
                 key={routeOption.id}
                 routeOption={routeOption}
-                displayIndex={index}
-                isReordering={isReordering}
+                index={index}
+                isReordering={isEditing}
               />
             ))}
           </DragDropProvider>

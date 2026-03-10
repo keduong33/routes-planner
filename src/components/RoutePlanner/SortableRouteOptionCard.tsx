@@ -7,6 +7,7 @@ import {
 import { useMemo, useState } from 'react'
 import type { Route } from '../../api/geo/locationIq/types'
 import type { RouteOption } from '../../types'
+import { DeleteButton } from '../DeleteButton'
 import { DragButton } from '../DragButton'
 import { useRoutePlanner } from './RoutePlannerContext'
 
@@ -57,14 +58,14 @@ function consolidateLegsForRoute({
 
 export function SortableRouteOptionCard({
   routeOption,
-  displayIndex,
-  isReordering,
+  index,
+  isReordering: isEditing,
 }: {
   routeOption: RouteOption
-  displayIndex: number
+  index: number
   isReordering: boolean
 }) {
-  const { setActiveRoute } = useRoutePlanner()
+  const { setActiveRoute, setRouteOptions } = useRoutePlanner()
   const [isExpanded, setIsExpanded] = useState(false)
   const route = routeOption.direction!.routes[0]
   const legsWithLabels = useMemo(
@@ -81,15 +82,21 @@ export function SortableRouteOptionCard({
     setActiveRoute(routeOption)
   }
 
+  const removeRouteOption = () => {
+    setRouteOptions((prev) => {
+      return [...prev.slice(0, index), ...prev.slice(index + 1)]
+    })
+  }
+
   const { ref, handleRef, isDragging } = useSortable({
     id: routeOption.id,
-    index: displayIndex,
-    disabled: !isReordering,
+    index,
+    disabled: !isEditing,
   })
 
   return (
     <div ref={ref} className="flex flex-row gap-1 items-center">
-      {isReordering && <DragButton handleRef={handleRef} />}
+      {isEditing && <DragButton handleRef={handleRef} />}
       <div
         className={`flex-1 rounded-lg border border-border bg-card p-3 text-left shadow-sm hover:cursor-pointer ${isDragging ? 'opacity-50' : ''}`}
         tabIndex={0}
@@ -100,7 +107,7 @@ export function SortableRouteOptionCard({
           className="flex flex-row items-center justify-between gap-2 transition-colors hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-ring rounded -m-1 p-1"
         >
           <div className="flex flex-col">
-            <p className="font-medium">Route {displayIndex + 1}</p>
+            <p className="font-medium">Route {index + 1}</p>
             {routeOption.type === 'optimized' && (
               <p className="text-xs font-semibold text-emerald-600">
                 {' (Best)'}
@@ -147,6 +154,7 @@ export function SortableRouteOptionCard({
           </div>
         )}
       </div>
+      {isEditing && <DeleteButton onRemove={removeRouteOption} />}
     </div>
   )
 }
