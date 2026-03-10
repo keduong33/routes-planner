@@ -18,6 +18,8 @@ concurrency:
 jobs:
     build:
         runs-on: ubuntu-latest
+        environment:
+            name: github-pages
         env:
             VITE_OPEN_ROUTE_SERVICE: ${{ secrets.VITE_OPEN_ROUTE_SERVICE }}
             VITE_LOCATION_IQ: ${{ secrets.VITE_LOCATION_IQ }}
