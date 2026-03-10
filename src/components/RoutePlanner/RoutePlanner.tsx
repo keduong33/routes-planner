@@ -3,8 +3,7 @@ import { DragDropProvider } from '@dnd-kit/react'
 import { isSortable } from '@dnd-kit/react/sortable'
 import { useCallback } from 'react'
 import type { NormalizedLocation } from '../../api/geo/types'
-import { arrayMove } from '../../lib/utils'
-import { genStopId } from '../../types'
+import { arrayMove, generateId } from '../../lib/utils'
 import type { FieldType } from '../MapDrawer/SearchBar/SearchBar'
 import { RouteInfo } from './RouteInfo'
 import { useRoutePlanner } from './RoutePlannerContext'
@@ -43,7 +42,7 @@ export function RoutePlanner() {
       ...prev,
       stops: [
         ...prev.stops.slice(0, -1),
-        { id: genStopId(), location: null },
+        { id: generateId(), location: null },
         prev.stops[prev.stops.length - 1],
       ],
     }))

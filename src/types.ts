@@ -1,5 +1,6 @@
 import type { Direction } from './api/geo/locationIq/types'
 import type { NormalizedLocation } from './api/geo/types'
+import { generateId } from './lib/utils'
 
 export type StopEntry = {
   id: string
@@ -13,19 +14,11 @@ export type RouteOption = {
   type: 'route' | 'optimized'
 }
 
-export function genStopId() {
-  return generateId()
-}
-
-export function generateId() {
-  return crypto.randomUUID()
-}
-
 export const newRoute: RouteOption = {
   id: generateId(),
   stops: [
-    { id: genStopId(), location: null },
-    { id: genStopId(), location: null },
+    { id: generateId(), location: null },
+    { id: generateId(), location: null },
   ],
   direction: null,
   type: 'route',

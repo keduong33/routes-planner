@@ -1,6 +1,7 @@
 import type { ClassValue } from 'clsx'
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { v4 as uuidv4 } from 'uuid'
 
 export function cn(...inputs: Array<ClassValue>) {
   return twMerge(clsx(inputs))
@@ -15,4 +16,8 @@ export function arrayMove<T>(
   const [removed] = newItems.splice(from, 1)
   newItems.splice(to, 0, removed)
   return newItems
+}
+
+export function generateId() {
+  return uuidv4()
 }

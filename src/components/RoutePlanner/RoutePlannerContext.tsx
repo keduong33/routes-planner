@@ -1,8 +1,9 @@
 import { createContext, useContext, useMemo, useState } from 'react'
 import { useDirection, useOptimizedDirection } from '../../api/geo/hooks'
 import type { Direction } from '../../api/geo/locationIq/types'
+import { generateId } from '../../lib/utils'
 import type { RouteOption } from '../../types'
-import { generateId, newRoute } from '../../types'
+import { newRoute } from '../../types'
 
 type RoutePlannerContextValue = {
   routeOptions: Array<RouteOption>
