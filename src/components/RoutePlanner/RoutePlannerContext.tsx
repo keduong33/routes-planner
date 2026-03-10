@@ -2,7 +2,7 @@ import { createContext, useContext, useMemo, useState } from 'react'
 import { useDirection, useOptimizedDirection } from '../../api/geo/hooks'
 import type { Direction } from '../../api/geo/locationIq/types'
 import type { RouteOption } from '../../types'
-import { newRoute } from '../../types'
+import { generateId, newRoute } from '../../types'
 
 type RoutePlannerContextValue = {
   routeOptions: Array<RouteOption>
@@ -39,7 +39,7 @@ export function RoutePlannerProvider({
       if (data) {
         setRouteOptions((prev) => [
           ...prev,
-          { ...activeRoute, direction: data, type: 'route' },
+          { ...activeRoute, id: generateId(), direction: data, type: 'route' },
         ])
       }
     }
@@ -49,7 +49,12 @@ export function RoutePlannerProvider({
       if (data) {
         setRouteOptions((prev) => [
           ...prev,
-          { ...activeRoute, direction: data, type: 'optimized' },
+          {
+            ...activeRoute,
+            id: generateId(),
+            direction: data,
+            type: 'optimized',
+          },
         ])
       }
     }

@@ -7,16 +7,22 @@ export type StopEntry = {
 }
 
 export type RouteOption = {
+  id: string
   stops: Array<StopEntry>
   direction: Direction | null
   type: 'route' | 'optimized'
 }
 
 export function genStopId() {
+  return generateId()
+}
+
+export function generateId() {
   return crypto.randomUUID()
 }
 
 export const newRoute: RouteOption = {
+  id: generateId(),
   stops: [
     { id: genStopId(), location: null },
     { id: genStopId(), location: null },
