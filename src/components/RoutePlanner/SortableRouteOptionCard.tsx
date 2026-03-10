@@ -73,6 +73,17 @@ export function SortableRouteOptionCard({
     [routeOption, route],
   )
 
+  const routeLabel = useMemo(() => {
+    if (!legsWithLabels || legsWithLabels.length === 0) {
+      return `Route ${index + 1}`
+    }
+
+    const firstLeg = legsWithLabels[0]
+    const lastLeg = legsWithLabels[legsWithLabels.length - 1]
+
+    return `${firstLeg.from} → ${lastLeg.to}`
+  }, [legsWithLabels, index])
+
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation()
     setIsExpanded((prev) => !prev)
@@ -107,7 +118,7 @@ export function SortableRouteOptionCard({
           className="flex flex-row items-center justify-between gap-2 transition-colors hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-ring rounded -m-1 p-1"
         >
           <div className="flex flex-col">
-            <p className="font-medium">Route {index + 1}</p>
+            <p className="font-medium">{routeLabel}</p>
             {routeOption.type === 'optimized' && (
               <p className="text-xs font-semibold text-emerald-600">
                 {' (Best)'}
@@ -148,9 +159,6 @@ export function SortableRouteOptionCard({
                 </span>
               </div>
             ))}
-            <p className="text-xs text-muted-foreground pt-1">
-              (Disclaimer: ETA could be inaccurate)
-            </p>
           </div>
         )}
       </div>

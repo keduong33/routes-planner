@@ -88,7 +88,7 @@ export function RoutePlanner() {
 
   return (
     <div className="flex flex-col gap-y-3 h-screen min-h-0">
-      <DragDropProvider onDragEnd={handleDragEnd}>
+      <DragDropProvider onDragEnd={handleDragEnd} key={activeRoute.id}>
         {activeRoute.stops.map((stop, i) => (
           <SortableStopRow
             key={stop.id}
