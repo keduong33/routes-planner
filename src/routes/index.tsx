@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useMemo } from 'react'
 import { MapContainer, Marker, Polyline, TileLayer } from 'react-leaflet'
 import { ControlMenu } from '../components/ControlMenu'
+import { FeedbackButton } from '../components/FeedbackButton'
 import { MapDrawer } from '../components/MapDrawer/MapDrawer'
 import {
   RoutePlannerProvider,
@@ -78,6 +79,7 @@ function RouteMarkers() {
 function AppInner() {
   return (
     <div className="w-full">
+      <FeedbackButton />
       <MapDrawer />
       <MapContainer
         center={[0, 0]}
