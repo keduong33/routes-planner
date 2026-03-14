@@ -1,5 +1,6 @@
 import type { Direction } from './api/geo/locationIq/types'
 import type { NormalizedLocation } from './api/geo/types'
+import { randomizeColor } from './consts'
 import { generateId } from './lib/utils'
 
 export type StopEntry = {
@@ -15,12 +16,15 @@ export type RouteOption = {
   color?: string
 }
 
-export const newRoute: RouteOption = {
-  id: generateId(),
-  stops: [
-    { id: generateId(), location: null },
-    { id: generateId(), location: null },
-  ],
-  direction: null,
-  type: 'route',
+export const generateNewRoute = (): RouteOption => {
+  return {
+    id: generateId(),
+    stops: [
+      { id: generateId(), location: null },
+      { id: generateId(), location: null },
+    ],
+    direction: null,
+    type: 'route',
+    color: randomizeColor(),
+  }
 }

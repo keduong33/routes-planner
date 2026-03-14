@@ -4,7 +4,7 @@ import type { Direction } from '../../api/geo/locationIq/types'
 import { randomizeColor } from '../../consts'
 import { generateId } from '../../lib/utils'
 import type { RouteOption } from '../../types'
-import { newRoute } from '../../types'
+import { generateNewRoute } from '../../types'
 
 type RoutePlannerContextValue = {
   routeOptions: Array<RouteOption>
@@ -30,7 +30,8 @@ export function RoutePlannerProvider({
 }) {
   const [routeOptions, setRouteOptions] = useState<Array<RouteOption>>([])
 
-  const [activeRoute, setActiveRoute] = useState<RouteOption>(newRoute)
+  const [activeRoute, setActiveRoute] =
+    useState<RouteOption>(generateNewRoute())
 
   const directionQuery = useDirection(activeRoute)
   const optimizedQuery = useOptimizedDirection(activeRoute)
@@ -49,6 +50,7 @@ export function RoutePlannerProvider({
             color: randomizeColor(),
           },
         ])
+        setActiveRoute(generateNewRoute())
       }
     }
 
@@ -65,6 +67,7 @@ export function RoutePlannerProvider({
             color: randomizeColor(),
           },
         ])
+        setActiveRoute(generateNewRoute())
       }
     }
 
