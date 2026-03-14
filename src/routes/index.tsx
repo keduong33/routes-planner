@@ -1,21 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useMemo } from 'react'
-import {
-  CircleMarker,
-  MapContainer,
-  Marker,
-  Polyline,
-  TileLayer,
-} from 'react-leaflet'
+import { MapContainer, TileLayer } from 'react-leaflet'
 import { ControlMenu } from '../components/ControlMenu'
 import { FeedbackButton } from '../components/FeedbackButton'
 import { MapDrawer } from '../components/MapDrawer/MapDrawer'
-import {
-  RoutePlannerProvider,
-  useRoutePlanner,
-} from '../components/RoutePlanner/RoutePlannerContext'
+import { RouteLayer } from '../components/RouteLayer'
+import { RoutePlannerProvider } from '../components/RoutePlanner/RoutePlannerContext'
 import { TooltipProvider } from '../components/ui/tooltip'
-import { createDestinationMarker } from '../leaflet.consts'
 
 const tiles: Array<{ attribution: string; url: string }> = [
   {
@@ -36,70 +26,6 @@ export const Route = createFileRoute('/')({
   component: App,
 })
 
-function RoutePolyline() {
-  const { routeOptions } = useRoutePlanner()
-
-  const allLatLongs = useMemo(() => {
-    return routeOptions
-      .map((routeOption) => {
-        const geom = routeOption.direction?.routes[0].geometry
-        if (!geom || typeof geom === 'string') return null
-        return geom.coordinates.map(
-          ([lon, lat]) => [lat, lon] as [number, number],
-        )
-      })
-      .filter((latLong) => latLong !== null)
-  }, [routeOptions])
-
-  //   useEffect(() => {
-  //     if (allLatLongs.length == 0) return
-  //     map.fitBounds(allLatLongs[0], { padding: [20, 20] })
-  //   }, [allLatLongs, map])
-
-  return (
-    <Polyline
-      positions={allLatLongs}
-      pathOptions={{ color: '#2563eb', weight: 5 }}
-    />
-  )
-}
-
-function RouteMarkers() {
-  const { activeRoute } = useRoutePlanner()
-
-  const points = useMemo(() => {
-    return activeRoute.stops
-      .map((s) => s.location)
-      .filter((l): l is NonNullable<typeof l> => l != null)
-      .map((l) => [l.lat, l.lon] as [number, number])
-  }, [activeRoute])
-
-  return (
-    <>
-      {points.map((pos, i) => {
-        if (i === points.length - 1) {
-          return (
-            <Marker
-              key={`destination:${activeRoute.id}-${pos}-${i}`}
-              position={pos}
-              icon={createDestinationMarker(activeRoute.color ?? 'blue')}
-            />
-          )
-        }
-
-        return (
-          <CircleMarker
-            key={`marker:${activeRoute.id}-${pos}-${i}`}
-            color={activeRoute.color ?? 'blue'}
-            center={pos}
-            radius={5}
-          />
-        )
-      })}
-    </>
-  )
-}
-
 function AppInner() {
   return (
     <div className="w-full">
@@ -117,8 +43,7 @@ function AppInner() {
           attribution={`&copy; ${chosenTile.attribution}`}
           url={chosenTile.url}
         />
-        <RouteMarkers />
-        <RoutePolyline />
+        <RouteLayer />
         <ControlMenu />
       </MapContainer>
     </div>
