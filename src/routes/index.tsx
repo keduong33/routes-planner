@@ -1,6 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useMemo } from 'react'
-import { MapContainer, Marker, Polyline, TileLayer } from 'react-leaflet'
+import {
+  CircleMarker,
+  MapContainer,
+  Marker,
+  Polyline,
+  TileLayer,
+} from 'react-leaflet'
 import { ControlMenu } from '../components/ControlMenu'
 import { FeedbackButton } from '../components/FeedbackButton'
 import { MapDrawer } from '../components/MapDrawer/MapDrawer'
@@ -9,6 +15,7 @@ import {
   useRoutePlanner,
 } from '../components/RoutePlanner/RoutePlannerContext'
 import { TooltipProvider } from '../components/ui/tooltip'
+import { createDestinationMarker } from '../leaflet.consts'
 
 const tiles: Array<{ attribution: string; url: string }> = [
   {
@@ -69,9 +76,26 @@ function RouteMarkers() {
 
   return (
     <>
-      {points.map((pos, i) => (
-        <Marker key={`route-point-${i}`} position={pos} />
-      ))}
+      {points.map((pos, i) => {
+        if (i === points.length - 1) {
+          return (
+            <Marker
+              key={`destination:${activeRoute.id}-${pos}-${i}`}
+              position={pos}
+              icon={createDestinationMarker(activeRoute.color ?? 'blue')}
+            />
+          )
+        }
+
+        return (
+          <CircleMarker
+            key={`marker:${activeRoute.id}-${pos}-${i}`}
+            color={activeRoute.color ?? 'blue'}
+            center={pos}
+            radius={5}
+          />
+        )
+      })}
     </>
   )
 }

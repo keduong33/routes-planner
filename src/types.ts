@@ -12,6 +12,7 @@ export type RouteOption = {
   stops: Array<StopEntry>
   direction: Direction | null
   type: 'route' | 'optimized'
+  color?: string
 }
 
 export const newRoute: RouteOption = {

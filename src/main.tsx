@@ -15,6 +15,8 @@ import 'leaflet/dist/leaflet.css'
 import reportWebVitals from './reportWebVitals.ts'
 import './styles.css'
 
+delete (L.Icon.Default.prototype as any)._getIconUrl
+
 L.Icon.Default.mergeOptions({
   iconRetinaUrl,
   iconUrl,
