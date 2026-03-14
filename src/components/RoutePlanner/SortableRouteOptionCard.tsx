@@ -6,6 +6,7 @@ import {
 } from 'date-fns'
 import { useMemo, useState } from 'react'
 import type { Route } from '../../api/geo/locationIq/types'
+import { isEmptyString } from '../../lib/utils'
 import type { RouteOption } from '../../types'
 import { DeleteButton } from '../DeleteButton'
 import { DragButton } from '../DragButton'
@@ -49,9 +50,14 @@ function consolidateLegsForRoute({
   const labels = getLocationLabels(routeOption)
   if (!labels || !route.legs.length || route.legs.length !== labels.length - 1)
     return null
+
   return route.legs.map((leg, index) => ({
-    from: labels[index],
-    to: labels[index + 1],
+    from: !isEmptyString(labels[index])
+      ? labels[index]
+      : routeOption.stops[index].location?.name,
+    to: !isEmptyString(labels[index + 1])
+      ? labels[index + 1]
+      : routeOption.stops[index + 1].location?.name,
     durationSeconds: leg.duration,
   }))
 }
@@ -152,10 +158,8 @@ export function SortableRouteOptionCard({
                 key={`${leg.from}-${leg.to}-${index}`}
                 className="flex flex-row justify-between gap-x-2"
               >
-                <span>
-                  {leg.from} → {leg.to}
-                </span>
-                <span className="font-medium">
+                <p className="line-clamp-1">{`${leg.from} -> ${leg.to}`}</p>
+                <span className="font-medium flex-shrink-0">
                   {formatDuration(leg.durationSeconds)}
                 </span>
               </div>

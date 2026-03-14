@@ -21,3 +21,7 @@ export function arrayMove<T>(
 export function generateId() {
   return uuidv4()
 }
+
+export function isEmptyString(s: string) {
+  return s.trim().length == 0
+}
