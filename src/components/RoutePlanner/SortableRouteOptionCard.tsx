@@ -1,5 +1,5 @@
 import { useSortable } from '@dnd-kit/react/sortable'
-import { CaretDownIcon, CaretUpIcon } from '@phosphor-icons/react'
+import { CaretDownIcon, CaretUpIcon, CircleIcon } from '@phosphor-icons/react'
 import {
   formatDuration as formatDurationDateFns,
   intervalToDuration,
@@ -125,6 +125,7 @@ export function SortableRouteOptionCard({
               </p>
             )}
           </div>
+          <CircleIcon size={20} weight="fill" color={routeOption.color} />
           <div className="flex flex-row items-center gap-3">
             <span className="text-sm text-muted-foreground">
               {formatDuration(route.duration)} ·{' '}

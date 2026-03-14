@@ -1,6 +1,7 @@
 import { createContext, useContext, useMemo, useState } from 'react'
 import { useDirection, useOptimizedDirection } from '../../api/geo/hooks'
 import type { Direction } from '../../api/geo/locationIq/types'
+import { randomizeColor } from '../../consts'
 import { generateId } from '../../lib/utils'
 import type { RouteOption } from '../../types'
 import { newRoute } from '../../types'
@@ -40,7 +41,13 @@ export function RoutePlannerProvider({
       if (data) {
         setRouteOptions((prev) => [
           ...prev,
-          { ...activeRoute, id: generateId(), direction: data, type: 'route' },
+          {
+            ...activeRoute,
+            id: generateId(),
+            direction: data,
+            type: 'route',
+            color: randomizeColor(),
+          },
         ])
       }
     }
@@ -55,6 +62,7 @@ export function RoutePlannerProvider({
             id: generateId(),
             direction: data,
             type: 'optimized',
+            color: randomizeColor(),
           },
         ])
       }
