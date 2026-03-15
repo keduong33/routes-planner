@@ -1,34 +1,33 @@
-import { MagnifyingGlassIcon } from '@phosphor-icons/react'
-import { useState } from 'react'
+import { XIcon } from '@phosphor-icons/react'
 import { RoutePlanner } from '../RoutePlanner/RoutePlanner'
 import { Button } from '../ui/button'
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '../ui/sheet'
 
-export function MapDrawer() {
-  const [open, setOpen] = useState(true)
+export function MapDrawer({
+  open,
+  setOpen,
+}: {
+  open: boolean
+  setOpen: (v: boolean) => void
+}) {
   return (
-    <Sheet defaultOpen modal={false} open={open} onOpenChange={setOpen}>
-      {!open && (
-        <SheetTrigger asChild>
-          <Button
-            className="top-2 left-2 absolute z-[800]"
-            variant="ghost"
-            size="icon"
-            onClick={() => setOpen(true)}
-          >
-            <MagnifyingGlassIcon size={20} />
+    <div
+      className={`transition-all duration-300 overflow-hidden ${
+        open ? 'w-full md:w-[50vw] lg:w-[500px]' : 'w-0'
+      }`}
+    >
+      <div className="h-full p-2 border-r bg-background flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-lg font-bold">Route planner</p>
+
+          <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
+            <XIcon size={20} />
           </Button>
-        </SheetTrigger>
-      )}
-      <SheetContent
-        side="left"
-        className={`w-full md:w-[50vw] lg:w-[500px] z-[800] p-2`}
-        onInteractOutside={(e) => e.preventDefault()}
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
-        <SheetTitle>Route planner</SheetTitle>
+        </div>
+
+        {/* Content */}
         <RoutePlanner />
-      </SheetContent>
-    </Sheet>
+      </div>
+    </div>
   )
 }
