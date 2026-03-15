@@ -30,15 +30,17 @@ export function FeedbackButton() {
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
   return (
-    <div className={`absolute top-1 right-1`}>
+    <div
+      className={`fixed right-0 top-[50%] -translate-y-1/2 -translate-x-2 -rotate-90 origin-right z-901`}
+    >
       <div className={CONTROL_CLASSES.control}>
         {isDesktop ? (
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="link">Feedback</Button>
+              <Button variant="secondary">Feedback</Button>
             </DialogTrigger>
 
-            <DialogContent className="h-[80vh] p-0 z-[99999]">
+            <DialogContent className="h-[80vh] p-0 z-902">
               <DialogTitle className="hidden">Feedback form</DialogTitle>
               <Form />
             </DialogContent>
@@ -46,10 +48,10 @@ export function FeedbackButton() {
         ) : (
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="link">Feedback</Button>
+              <Button variant="secondary">Feedback</Button>
             </SheetTrigger>
 
-            <SheetContent side="bottom" className="h-full p-0 z-[99999]">
+            <SheetContent side="bottom" className="h-full p-0 z-902">
               <Form />
             </SheetContent>
           </Sheet>

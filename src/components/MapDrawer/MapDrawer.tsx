@@ -11,7 +11,7 @@ export function MapDrawer({
 }) {
   return (
     <div
-      className={`transition-all duration-300 overflow-hidden ${
+      className={`transition-all duration-300 overflow-hidden z-10 ${
         open ? 'w-full md:w-[50vw] lg:w-[500px]' : 'w-0'
       }`}
     >
