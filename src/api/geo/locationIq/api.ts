@@ -1,6 +1,11 @@
 import type { RouteOption } from '../../../types'
 import type { NormalizedLocation } from '../types'
-import type { Direction, Location, OptimizeResponse } from './types'
+import type {
+  AutocompleteResult,
+  Direction,
+  Location,
+  OptimizeResponse,
+} from './types'
 
 const locationIqUrl = 'https://us1.locationiq.com/v1/'
 const options = { method: 'GET', headers: { accept: 'application/json' } }
@@ -20,6 +25,26 @@ export const locationIqApi = {
     return data.map((item) => ({
       id: item.place_id,
       name: item.display_name,
+      lat: parseFloat(item.lat),
+      lon: parseFloat(item.lon),
+      displayName: item.display_name,
+    }))
+  },
+
+  /**
+   * Autocomplete API - provides fast address suggestions as the user types
+   * https://docs.locationiq.com/docs/autocomplete.md
+   */
+  async autocomplete(query: string): Promise<Array<NormalizedLocation>> {
+    const res = await fetch(
+      `${locationIqUrl}autocomplete?key=${key}&q=${encodeURIComponent(query)}&limit=5&dedupe=1`,
+      options,
+    )
+    const data = (await res.json()) as Array<AutocompleteResult>
+
+    return data.map((item) => ({
+      id: item.place_id,
+      name: item.display_place,
       lat: parseFloat(item.lat),
       lon: parseFloat(item.lon),
       displayName: item.display_name,

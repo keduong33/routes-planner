@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { useDebounce } from '@uidotdev/usehooks'
 import type { RouteOption } from '../../types'
 import { createGeoApi } from './geoApi'
 
@@ -20,6 +21,17 @@ export function useSearchAddress(query: string) {
     queryKey: ['search', provider, query],
     queryFn: () => geoAPI.search(query),
     ...baseUseQuery,
+  })
+}
+
+export function useAutocomplete(query: string, debounceSecond: number = 1) {
+  const debouncedQuery = useDebounce(query, debounceSecond * 1000)
+
+  return useQuery({
+    ...baseUseQuery,
+    queryKey: ['autocomplete', provider, debouncedQuery],
+    queryFn: () => geoAPI.autocomplete(debouncedQuery),
+    enabled: debouncedQuery.length > 0,
   })
 }
 

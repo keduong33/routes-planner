@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useSearchAddress } from '../../../api/geo/hooks'
+import { useAutocomplete } from '../../../api/geo/hooks'
 import type { NormalizedLocation } from '../../../api/geo/types'
 import { Input } from '../../ui/input'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../ui/tooltip'
@@ -35,18 +35,15 @@ export function SearchBar({
   const [selectedLocation, setSelectedLocation] =
     useState<NormalizedLocation | null>(initialLocation)
 
-  const [_showDropdown, setShowDropdown] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const [selectedIndex, setSelectedIndex] = useState(-1)
 
   const {
     data: locations,
-    refetch,
     isLoading,
     error,
-  } = useSearchAddress(searchedAddress)
-
-  const canSubmit = searchedAddress.length > 0
+  } = useAutocomplete(searchedAddress, 0.5)
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -70,7 +67,7 @@ export function SearchBar({
       setShowDropdown(false)
       handleLocationSelect(location, stopIndex)
     },
-    [fieldType, stopIndex, handleLocationSelect],
+    [handleLocationSelect, stopIndex],
   )
 
   const handleInputChange = (value: string) => {
@@ -81,14 +78,14 @@ export function SearchBar({
     }
   }
 
+  const handleFocus = () => {
+    if (searchedAddress.length > 0) {
+      setShowDropdown(true)
+    }
+  }
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      // Handle Enter when no location is selected
-      if (selectedIndex === -1 && canSubmit && e.key === 'Enter') {
-        refetch()
-        return
-      }
-
       const maxIndex =
         locations && locations.length > 0
           ? Math.min(locations.length, 5) - 1
@@ -117,8 +114,6 @@ export function SearchBar({
             const location = locations[selectedIndex]
             onLocationClick(location)
             setSelectedIndex(-1)
-          } else if (canSubmit) {
-            refetch()
           }
           break
         case 'Escape':
@@ -127,7 +122,7 @@ export function SearchBar({
           break
       }
     },
-    [selectedIndex, canSubmit, locations, refetch, onLocationClick],
+    [selectedIndex, locations, onLocationClick],
   )
 
   useEffect(() => {
@@ -136,21 +131,22 @@ export function SearchBar({
 
   useEffect(() => {
     if (error) {
-      alert(`Failed to search`)
+      console.error('Autocomplete error:', error)
     }
   }, [error])
 
   return (
-    <div className="w-full relative">
+    <div className="w-full relative" ref={dropdownRef}>
       <Input
         placeholder={fieldTypeToPlaceholderText.get(fieldType)}
         value={searchedAddress}
         onChange={(e) => handleInputChange(e.currentTarget.value)}
         onKeyDown={handleKeyDown}
+        onFocus={handleFocus}
         type="search"
       />
 
-      {isLoading && (
+      {isLoading && showDropdown && (
         <DropDown>
           <div className="px-4 py-3">
             <p className="text-sm text-gray-900">Loading...</p>
@@ -158,8 +154,8 @@ export function SearchBar({
         </DropDown>
       )}
 
-      {/* Only render suggestions if locations exist */}
-      {locations && locations.length > 0 && (
+      {/* Only render suggestions if locations exist and dropdown is visible */}
+      {locations && locations.length > 0 && showDropdown && (
         <DropDown>
           {locations.slice(0, 5).map((location, i) => (
             <Tooltip key={location.id}>
