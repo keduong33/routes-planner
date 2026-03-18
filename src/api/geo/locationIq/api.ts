@@ -35,11 +35,27 @@ export const locationIqApi = {
    * Autocomplete API - provides fast address suggestions as the user types
    * https://docs.locationiq.com/docs/autocomplete.md
    */
-  async autocomplete(query: string): Promise<Array<NormalizedLocation>> {
-    const res = await fetch(
-      `${locationIqUrl}autocomplete?key=${key}&q=${encodeURIComponent(query)}&limit=5&dedupe=1`,
-      options,
-    )
+  async autocomplete(
+    query: string,
+    biasLat?: number,
+    biasLon?: number,
+  ): Promise<Array<NormalizedLocation>> {
+    const params = new URLSearchParams({
+      key,
+      q: query,
+      limit: '5',
+      dedupe: '1',
+      importancesort: '0',
+    })
+
+    // Add location biasing using viewbox if coordinates provided
+    if (biasLat !== undefined && biasLon !== undefined) {
+      const viewbox = createViewbox(biasLat, biasLon, 50)
+      params.append('viewbox', viewbox)
+      // Don't use bounded=1 so we still get global results, just prioritized
+    }
+
+    const res = await fetch(`${locationIqUrl}autocomplete?${params}`, options)
     const data = (await res.json()) as Array<AutocompleteResult>
 
     return data.map((item) => ({
@@ -127,6 +143,24 @@ export const locationIqApi = {
 
 function convertToCoordinates(location: NormalizedLocation) {
   return `${location.lon},${location.lat}`
+}
+
+function createViewbox(
+  lat: number,
+  lon: number,
+  radiusKm: number = 50,
+): string {
+  // Rough conversion: 1 degree latitude ≈ 111km
+  // 1 degree longitude varies by latitude, use cos(lat) approximation
+  const latDelta = radiusKm / 111
+  const lonDelta = radiusKm / (111 * Math.cos((lat * Math.PI) / 180))
+
+  const minLat = lat - latDelta
+  const maxLat = lat + latDelta
+  const minLon = lon - lonDelta
+  const maxLon = lon + lonDelta
+
+  return `${minLon},${minLat},${maxLon},${maxLat}`
 }
 
 // @ts-ignore used during dev

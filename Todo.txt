@@ -1,7 +1,6 @@
 # Should have
-[] search nearby
-[] Reverse geocoding - search from a location on the map
-[] B.Y.O public key
+- Reverse geocoding - search from a location on the map
+- B.Y.O public key
 
 # Someday
 [] Account

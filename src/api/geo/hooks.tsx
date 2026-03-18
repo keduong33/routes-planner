@@ -24,13 +24,18 @@ export function useSearchAddress(query: string) {
   })
 }
 
-export function useAutocomplete(query: string, debounceSecond: number = 1) {
+export function useAutocomplete(
+  query: string,
+  debounceSecond: number = 1,
+  biasLat?: number,
+  biasLon?: number,
+) {
   const debouncedQuery = useDebounce(query, debounceSecond * 1000)
 
   return useQuery({
     ...baseUseQuery,
-    queryKey: ['autocomplete', provider, debouncedQuery],
-    queryFn: () => geoAPI.autocomplete(debouncedQuery),
+    queryKey: ['autocomplete', provider, debouncedQuery, biasLat, biasLon],
+    queryFn: () => geoAPI.autocomplete(debouncedQuery, biasLat, biasLon),
     enabled: debouncedQuery.length > 0,
   })
 }

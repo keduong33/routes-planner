@@ -16,6 +16,32 @@ function getFieldType(i: number, routeLength: number): FieldType {
   return 'stop'
 }
 
+/**
+ * Get the location to bias search results towards.
+ * Strategy:
+ * - For the first stop: no bias (search globally)
+ * - For subsequent stops: use the previous stop's location to bias nearby results
+ */
+function getBiasLocation(
+  stopIndex: number,
+  stops: Array<{ id: string; location: NormalizedLocation | null }>,
+): { lat: number; lon: number } | undefined {
+  if (stopIndex === 0) {
+    // First stop - no bias, search globally
+    return undefined
+  }
+
+  // Check previous stops for a valid location to bias towards
+  for (let i = stopIndex - 1; i >= 0; i--) {
+    const prevLocation = stops[i].location
+    if (prevLocation) {
+      return { lat: prevLocation.lat, lon: prevLocation.lon }
+    }
+  }
+
+  return undefined
+}
+
 export function RoutePlanner() {
   const {
     setActiveRoute,
@@ -97,6 +123,7 @@ export function RoutePlanner() {
             onLocationSelect={handleLocationSelect}
             onRemove={removeStop}
             canRemove={activeRoute.stops.length > 2}
+            biasLocation={getBiasLocation(i, activeRoute.stops)}
           />
         ))}
       </DragDropProvider>

@@ -13,6 +13,7 @@ export function SortableStopRow({
   onLocationSelect,
   onRemove,
   canRemove,
+  biasLocation,
 }: {
   stop: { id: string; location: NormalizedLocation | null }
   stopIndex: number
@@ -20,6 +21,7 @@ export function SortableStopRow({
   onLocationSelect: (location: NormalizedLocation, stopIndex?: number) => void
   onRemove: (i: number) => void
   canRemove: boolean
+  biasLocation?: { lat: number; lon: number }
 }) {
   const { ref, handleRef, isDragging } = useSortable({
     id: stop.id,
@@ -50,6 +52,7 @@ export function SortableStopRow({
         handleLocationSelect={onLocationSelect}
         stopIndex={stopIndex}
         fieldType={fieldType}
+        biasLocation={biasLocation}
       />
       {canRemove ? (
         <Tooltip>

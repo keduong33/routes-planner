@@ -15,6 +15,7 @@ export type SearchBarProps = {
     stopIndex?: number,
   ) => void
   stopIndex?: number
+  biasLocation?: { lat: number; lon: number }
 }
 
 const fieldTypeToPlaceholderText = new Map<FieldType, string>([
@@ -28,6 +29,7 @@ export function SearchBar({
   fieldType,
   handleLocationSelect,
   stopIndex,
+  biasLocation,
 }: SearchBarProps) {
   const [searchedAddress, setSearchedAddress] = useState<string>(
     initialLocation ? initialLocation.displayName : '',
@@ -43,7 +45,12 @@ export function SearchBar({
     data: locations,
     isLoading,
     error,
-  } = useAutocomplete(searchedAddress, 0.5)
+  } = useAutocomplete(
+    searchedAddress,
+    0.5,
+    biasLocation?.lat,
+    biasLocation?.lon,
+  )
 
   // Close dropdown when clicking outside
   useEffect(() => {
