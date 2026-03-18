@@ -1,10 +1,7 @@
-# Must have
-[] Forward geocoding - search address
-[] Direction
-
 # Should have
-[] Autocomplete
+[] search nearby
 [] Reverse geocoding - search from a location on the map
+[] B.Y.O public key
 
 # Someday
 [] Account
